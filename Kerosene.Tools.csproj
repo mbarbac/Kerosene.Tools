@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{31387215-0BBD-4AFE-B29B-2A8AD94073B6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Kerosene.Tools</RootNamespace>
+    <AssemblyName>Kerosene.Tools</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\IEquivalent.cs" />
+    <Compile Include="Core\EasyVersion.cs" />
+    <Compile Include="Core\IDisposableEx.cs" />
+    <Compile Include="Core\ElementInfo.cs" />
+    <Compile Include="Core\DeepObject.cs" />
+    <Compile Include="Core\DynamicParser.cs" />
+    <Compile Include="Core\DynamicInfo.cs" />
+    <Compile Include="Extensions\StringEx.cs" />
+    <Compile Include="Extensions\CharEx.cs" />
+    <Compile Include="Extensions\ExceptionEx.cs" />
+    <Compile Include="Extensions\TypeEx.cs" />
+    <Compile Include="Extensions\ObjectEx.cs" />
+    <Compile Include="Extensions\MethodEx.cs" />
+    <Compile Include="Extensions\SerializationEx.cs" />
+    <Compile Include="Others\CalendarDate.cs" />
+    <Compile Include="Others\ClockTime.cs" />
+    <Compile Include="Diagnostics\DebugEx.cs" />
+    <Compile Include="Diagnostics\ConsoleEx.cs" />
+    <Compile Include="Exceptions\CannotExecuteException.cs" />
+    <Compile Include="Exceptions\CannotCreateException.cs" />
+    <Compile Include="Exceptions\NotOrphanException.cs" />
+    <Compile Include="Exceptions\OrphanException.cs" />
+    <Compile Include="Exceptions\NotEmptyException.cs" />
+    <Compile Include="Exceptions\EmptyException.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="Exceptions\DuplicateException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="License.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

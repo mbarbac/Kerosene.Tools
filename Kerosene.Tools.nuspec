@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>7.0.1</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>http://www.codeproject.com/info/cpol10.aspx</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Kerosene C# Dynamic Tools Library</description>
+    <copyright>Copyright (c) Moises Barba Cebeira 2008-2015</copyright>
+    <tags>Kerosene ORM Dynamic C#</tags>
+  </metadata>
+</package>
