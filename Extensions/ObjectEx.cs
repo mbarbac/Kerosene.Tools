@@ -23,7 +23,7 @@ namespace Kerosene.Tools
 		Default = 0,
 
 		/// <summary>
-		/// Force the usage of rounded brackets for enumerable objects.
+		/// Force the usage of rounded brackets for enumerable objects instead of squared ones.
 		/// </summary>
 		RoundedBrackets = 1,
 
@@ -38,6 +38,12 @@ namespace Kerosene.Tools
 		/// object.
 		/// </summary>
 		IncludeStaticMembers = 4,
+
+		/// <summary>
+		/// Include also fields and not only properties in case they are needed to generate the
+		/// skectch of a given object.
+		/// </summary>
+		IncludeFields = 8,
 	}
 
 	// ==================================================== 
@@ -52,12 +58,13 @@ namespace Kerosene.Tools
 		/// <param name="obj">The object to obtains its alternate string representation from.</param>
 		/// <param name="op">Optional options to obtain the representation.</param>
 		/// <returns>The requested alternate string representation.</returns>
-		public static string Sketch(this object obj, SketchOptions op = SketchOptions.Default)
+		public static string Sketch(this object obj, SketchOptions ops = SketchOptions.Default)
 		{
 			// Some pretty obvious cases...
 			if (obj == null) return string.Empty;
 			if (obj is string) return (string)obj;
 			if (obj is char[]) return new string((char[])obj);
+			if (obj is Type) return ((Type)obj).EasyName();
 
 			// Enumerations...
 			var type = obj.GetType();
@@ -68,9 +75,11 @@ namespace Kerosene.Tools
 			if (method.DeclaringType != typeof(object)) return obj.ToString();
 
 			// Elements to be used in the next sections...
-			bool rounded = op.HasFlag(SketchOptions.RoundedBrackets);
+			bool rounded = ops.HasFlag(SketchOptions.RoundedBrackets);
 			char ini = rounded ? '(' : '[';
 			char end = rounded ? ')' : ']';
+			ops &= ~SketchOptions.RoundedBrackets; // Rounded brackest for this level only...
+
 			StringBuilder sb = new StringBuilder();
 
 			// IDictionary...
@@ -81,7 +90,7 @@ namespace Kerosene.Tools
 				sb.Append(ini); var first = true; foreach (DictionaryEntry kvp in temp)
 				{
 					if (first) first = false; else sb.Append(", ");
-					sb.AppendFormat("{0} = {1}", kvp.Key.Sketch(op), kvp.Value.Sketch(op));
+					sb.AppendFormat("{0} = {1}", kvp.Key.Sketch(ops), kvp.Value.Sketch(ops));
 				}
 				sb.Append(end);
 
@@ -97,7 +106,7 @@ namespace Kerosene.Tools
 				sb.Append(ini); var first = true; while (iter.MoveNext())
 				{
 					if (first) first = false; else sb.Append(", ");
-					sb.Append(iter.Current.Sketch(op));
+					sb.Append(iter.Current.Sketch(ops));
 				}
 				sb.Append(end);
 
@@ -105,22 +114,24 @@ namespace Kerosene.Tools
 				return sb.ToString();
 			}
 
+
 			// Using members...
 			List<MemberInfo> list = new List<MemberInfo>();
 			BindingFlags flags = BindingFlags.Public | BindingFlags.Instance;
-			if (op.HasFlag(SketchOptions.IncludePrivateMembers)) flags |= BindingFlags.NonPublic;
-			if (op.HasFlag(SketchOptions.IncludeStaticMembers)) flags |= BindingFlags.Static;
+			if (ops.HasFlag(SketchOptions.IncludePrivateMembers)) flags |= BindingFlags.NonPublic;
+			if (ops.HasFlag(SketchOptions.IncludeStaticMembers)) flags |= BindingFlags.Static;
 
-			PropertyInfo[] props = type.GetProperties(flags); list.AddRange(props.Where(x => x.CanRead));
-			FieldInfo[] fields = type.GetFields(flags); foreach (var field in fields)
+			PropertyInfo[] props = type.GetProperties(flags);
+			list.AddRange(props.Where(x => x.CanRead));
+
+			if (ops.HasFlag(SketchOptions.IncludeFields))
 			{
-				// To avoid backing fields...
-				if (field.CustomAttributes
-					.Where(x => x.AttributeType == typeof(CompilerGeneratedAttribute))
-					.Count() != 0)
-					continue;
-
-				list.Add(field);
+				FieldInfo[] fields = type.GetFields(flags); foreach (var field in fields)
+				{
+					// Avoiding backing fields created for automatic properties...
+					int n = field.CustomAttributes.Where(x => x.AttributeType == typeof(CompilerGeneratedAttribute)).Count();
+					if (n == 0) list.Add(field);
+				}
 			}
 
 			if (list.Count != 0)
@@ -132,7 +143,7 @@ namespace Kerosene.Tools
 						: ((PropertyInfo)info).GetValue(obj);
 
 					if (first) first = false; else sb.Append(", ");
-					sb.AppendFormat("{0} = {1}", info.Name, v.Sketch(op));
+					sb.AppendFormat("{0} = {1}", info.Name, v.Sketch(ops));
 				}
 				sb.Append("}"); return sb.ToString();
 			}
@@ -142,52 +153,79 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Returns either a clone of the original object or, if it does not implement the
-		/// <see cref="ICloneable"/> interface, the original instance itself.
+		/// Returns either a clone of the original object, if it implements the <see cref="ICloneable"/>
+		/// interface, or the original object.
 		/// </summary>
-		/// <param name="obj">The source object.</param>
-		/// <param name="extended">If true then a parameterless 'Clone()' method used, if any
-		/// exists in the object's type.</param>
-		/// <returns>Either a clone of the source object or the original object itself.</returns>
-		public static object TryClone(this object obj, bool extended = false)
+		/// <param name="obj">The object to clone.</param>
+		/// <returns>Either a clone of the original object or the original one itself.</returns>
+		public static object TryClone(this object obj)
 		{
 			if (obj == null) return null;
 			if (obj is string) return obj;
 			if (obj is ValueType) return obj;
 
 			if (obj is ICloneable) return ((ICloneable)obj).Clone();
-			if (extended)
-			{
-				var info = obj.GetType().GetMethod("Clone", Type.EmptyTypes);
-				if (info != null && info.ReturnType != typeof(void))
-					obj = info.Invoke(obj, null);
-			}
 			return obj;
 		}
 
 		/// <summary>
-		/// Returns either a clone of the original object or, if it does not implement the
-		/// <see cref="ICloneable"/> interface, the original instance itself.
+		/// Returns either a clone of the original object, if it implements the <see cref="ICloneable"/>
+		/// interface, or the original object.
 		/// </summary>
-		/// <typeparam name="T">The type of the object to clone and return.</typeparam>
-		/// <param name="obj">The source object.</param>
-		/// <param name="extended">If true then a parameterless 'Clone()' method used, if any
-		/// exists in the object's type.</param>
-		/// <returns>Either a clone of the source object or the original object itself.</returns>
-		public static T TryClone<T>(this T obj, bool extended = false)
+		/// <typeparam name="T">The type to cast of the object to clone.</typeparam>
+		/// <param name="obj">The object to clone.</param>
+		/// <returns>Either a clone of the original object or the original one itself.</returns>
+		public static T TryClone<T>(this T obj)
 		{
-			var temp = ((object)obj).TryClone(extended);
+			var temp = ((object)obj).TryClone();
 			return (T)temp;
 		}
 
-		static Delegate CreateConverterDelegate(Type sourceType, Type targetType)
+		/// <summary>
+		/// Converts the source object into an instance of the target type given.
+		/// </summary>
+		/// <param name="obj">The source object.</param>
+		/// <param name="targetType">The type to convert the source object to.</param>
+		/// <returns>The converted instance, or the original one if no conversion is needed.</returns>
+		public static object ConvertTo(this object obj, Type targetType)
+		{
+			if (targetType == null) throw new ArgumentNullException("type", "Target type cannot be null.");
+
+			if (obj == null)
+			{
+				if (targetType.IsNullableType()) return null;
+				throw new ArgumentException(
+					"Cannot convert a null source into an instance of the not-nullable '{0}' type."
+					.FormatWith(targetType.EasyName()));
+			}
+
+			var sourceType = obj.GetType();
+			if (sourceType == targetType) return obj;
+			if (targetType.IsAssignableFrom(sourceType)) return obj;
+
+			var converter = LocateConverterDelegate(sourceType, targetType);
+			return converter.DynamicInvoke(obj);
+		}
+
+		/// <summary>
+		/// Converts the source object into an instance of the target type given.
+		/// </summary>
+		/// <typeparam name="T">The type to convert the source object to.</typeparam>
+		/// <param name="obj">The source object.</param>
+		/// <returns>The converted instance, or the original one if no conversion is needed.</returns>
+		public static T ConvertTo<T>(this object obj)
+		{
+			var temp = ConvertTo(obj, typeof(T));
+			return (T)temp;
+		}
+
+		private static Delegate LocateConverterDelegate(Type sourceType, Type targetType)
 		{
 			// Creates the delegate to invoke when conversions are needed.
 			// The following code is an adaptation of an original one of Richard Deeming.
 
 			string name = string.Format("{0}--{1}", sourceType.FullName, targetType.FullName);
-			Delegate ret = null;
-			if (_Converters.TryGetValue(name, out ret)) return ret;
+			Delegate ret = null; if (_Converters.TryGetValue(name, out ret)) return ret;
 
 			var input = Expression.Parameter(sourceType, "input");
 			Expression body; try
@@ -206,44 +244,6 @@ namespace Kerosene.Tools
 			return ret;
 		}
 		static Dictionary<string, Delegate> _Converters = new Dictionary<string, Delegate>();
-
-		/// <summary>
-		/// Converts the source object into an instance of the target type given.
-		/// </summary>
-		/// <param name="obj">The source object.</param>
-		/// <param name="type">The type to convert the source object to.</param>
-		/// <returns>The converted instance, or the original one if no conversion is needed.</returns>
-		public static object ConvertTo(this object obj, Type type)
-		{
-			if (type == null) throw new ArgumentNullException("type", "Target type cannot be null.");
-
-			if (obj == null)
-			{
-				if (type.IsNullableType()) return null;
-				throw new ArgumentException(
-					"Cannot convert a null source into an instance of the not-nullable '{0}' type."
-					.FormatWith(type.EasyName()));
-			}
-
-			Type source = obj.GetType();
-			if (source == type) return obj;
-			if (type.IsAssignableFrom(source)) return obj;
-
-			Delegate converter = CreateConverterDelegate(source, type);
-			return converter.DynamicInvoke(obj);
-		}
-
-		/// <summary>
-		/// Converts the source object into an instance of the target type given.
-		/// </summary>
-		/// <typeparam name="T">The type to convert the source object to.</typeparam>
-		/// <param name="obj">The source object.</param>
-		/// <returns>The converted instance, or the original one if no conversion is needed.</returns>
-		public static T ConvertTo<T>(this object obj)
-		{
-			var temp = ConvertTo(obj, typeof(T));
-			return (T)temp;
-		}
 	}
 }
 // ======================================================== 

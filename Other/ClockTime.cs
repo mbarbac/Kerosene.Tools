@@ -2,6 +2,7 @@
 namespace Kerosene.Tools
 {
 	using System;
+	using System.Linq;
 	using System.Runtime.Serialization;
 
 	// ==================================================== 

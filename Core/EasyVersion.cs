@@ -3,6 +3,7 @@ namespace Kerosene.Tools
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Text;
 
@@ -35,9 +36,13 @@ namespace Kerosene.Tools
 		/// <param name="version"></param>
 		public EasyVersion(string version)
 		{
-			OnIntialize(version);
+			OnInitialize(version);
 		}
-		void OnIntialize(string version)
+
+		/// <summary>
+		/// Used both for the constructor and for the Clone() method
+		/// </summary>
+		void OnInitialize(string version)
 		{
 			version = version.NullIfTrimmedIsEmpty(); if (version == null) return;
 			version = version.Replace(" ", string.Empty);
@@ -105,7 +110,7 @@ namespace Kerosene.Tools
 				"Cloned instance '{0}' is not a valid '{1}' one."
 				.FormatWith(cloned.Sketch(), typeof(EasyVersion).EasyName()));
 
-			OnIntialize(Payload);
+			OnInitialize(Payload);
 		}
 
 		/// <summary>
@@ -435,9 +440,10 @@ namespace Kerosene.Tools
 			if (object.ReferenceEquals(left, null)) return object.ReferenceEquals(right, null) ? 0 : -1;
 			if (object.ReferenceEquals(right, null)) return object.ReferenceEquals(left, null) ? 0 : +1;
 
-			if (left.IsNumeric && right.IsNumeric) return
-				(left.Value == right.Value) ? 0 :
-				(left.Value < right.Value ? -1 : +1);
+			if (left.IsNumeric && right.IsNumeric)
+				return
+					(left.Value == right.Value) ? 0 :
+					(left.Value < right.Value ? -1 : +1);
 
 			return string.Compare(left.Payload, right.Payload, ignoreCase: true);
 		}

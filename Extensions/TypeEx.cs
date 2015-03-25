@@ -94,7 +94,7 @@ namespace Kerosene.Tools
 		{
 			if (type == null) throw new NullReferenceException("Type cannot be null.");
 
-			return type.IsNotPublic && Attribute.IsDefined(
+			return Attribute.IsDefined(
 				type,
 				typeof(CompilerGeneratedAttribute),
 				false);

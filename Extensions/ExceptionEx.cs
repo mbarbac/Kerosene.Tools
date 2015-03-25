@@ -25,7 +25,7 @@ namespace Kerosene.Tools
 				if (e.Message != null) sb.AppendFormat(", {0}", e.Message);
 				if (e.StackTrace != null) sb.AppendFormat("\n{0}", e.StackTrace);
 
-				if ((e = e.InnerException) != null) sb.Append("\n---\n");
+				if ((e = e.InnerException) != null) sb.Append("\n----- Inner Exception: -----\n");
 			}
 			return sb.ToString();
 		}

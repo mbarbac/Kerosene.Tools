@@ -1,7 +1,9 @@
-﻿// ======================================================== ElementInfo.cs
+﻿using System;
+// ======================================================== ElementInfo.cs
 namespace Kerosene.Tools
 {
 	using System;
+	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
@@ -20,7 +22,8 @@ namespace Kerosene.Tools
 		private ElementInfo() { }
 
 		/// <summary>
-		/// Validates that the given member info is a property or a field.
+		/// Validates that the given member info is a field or a non-indexed property, throwing
+		/// an exception otherwise.
 		/// </summary>
 		private void ValidateMemberType(MemberInfo info)
 		{
@@ -48,6 +51,19 @@ namespace Kerosene.Tools
 		{
 			ValidateMemberType(info);
 			_MemberInfo = info;
+		}
+
+		/// <summary>
+		/// Initializes a new multipart instance.
+		/// </summary>
+		/// <remarks>This is an internal constructor and no checks are made about if the element
+		/// belongs to the parent instance or not.</remarks>
+		internal ElementInfo(ElementInfo parent, MemberInfo info)
+			: this(info)
+		{
+			if (parent == null) throw new ArgumentNullException("parent", "Parent Info cannot be null.");
+			if (parent.IsDisposed) throw new ObjectDisposedException(parent.ToString());
+			_Parent = parent;
 		}
 
 		/// <summary>
@@ -343,19 +359,6 @@ namespace Kerosene.Tools
 	// ==================================================== 
 	public partial class ElementInfo
 	{
-		/// <summary>
-		/// Initializes a new multipart instance.
-		/// </summary>
-		/// <remarks>This is an internal constructor as no checks are made about if the element
-		/// belongs to the parent instance or not.</remarks>
-		internal ElementInfo(ElementInfo parent, MemberInfo info)
-			: this(info)
-		{
-			if (parent == null) throw new ArgumentNullException("parent", "Parent Info cannot be null.");
-			if (parent.IsDisposed) throw new ObjectDisposedException(parent.ToString());
-			_Parent = parent;
-		}
-
 		/// <summary>
 		/// Returns the name of the element the given expression resolves to. Multipart names
 		/// are allowed.

@@ -17,9 +17,9 @@ namespace Kerosene.Tools
 		/// information is not available.
 		/// </summary>
 		/// <param name="depth">The depth into the calling stack:
-		/// <para>- 0: the current <see cref="MethodonStack"/> method.</para>
-		/// <para>- 1: the method that has called this one.</para>
-		/// <para>- 2: the method from which the caller of this one was invoked.</para>
+		/// <para>- 0: the <see cref="MethodonStack"/> method.</para>
+		/// <para>- 1: the 'current' method (the one from which this one is called).</para>
+		/// <para>- 2: the caller of the 'current0 method.</para>
 		/// <para>Etc...</para>
 		/// </param>
 		/// <returns>The method reference, or null.</returns>

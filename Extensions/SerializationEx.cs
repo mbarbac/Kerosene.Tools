@@ -151,7 +151,7 @@ namespace Kerosene.Tools
 	/// Used for easy serialization of complex types.
 	/// </summary>
 	[Serializable]
-	internal class SerializationHolder : ISerializable
+	class SerializationHolder : ISerializable
 	{
 		Type _Type = null;
 		Object _Value = null;
@@ -173,7 +173,7 @@ namespace Kerosene.Tools
 		public override string ToString()
 		{
 			return string.Format("{0}({1})",
-				_Type == null ? string.Empty : _Type.EasyName(), 
+				_Type == null ? string.Empty : _Type.EasyName(),
 				_Value.Sketch());
 		}
 

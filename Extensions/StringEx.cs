@@ -18,7 +18,7 @@ namespace Kerosene.Tools
 		public static string FormatWith(this string source, params object[] args)
 		{
 			if (source == null) throw new NullReferenceException("Source string cannot be null.");
-			if (args != null && args.Length != 0) source = string.Format(source, args);
+			if (args != null) source = string.Format(source, args);
 
 			return source;
 		}
@@ -94,12 +94,24 @@ namespace Kerosene.Tools
 		public static string Remove(this string source, string target, StringComparison comparisonType)
 		{
 			if (source == null) throw new NullReferenceException("Source string cannot be null.");
-			
+
 			if (target == null || target == string.Empty) return source;
 			if (source == string.Empty) return string.Empty;
 
 			int start = source.IndexOf(target, comparisonType); if (start < 0) return source;
 			return source.Remove(start, target.Length);
+		}
+
+		/// <summary>
+		/// Removes from the source string the first ocurrence of the target one, if any, returning
+		/// a new string with the result, using the current culture for comparisons.
+		/// </summary>
+		/// <param name="source">The source string.</param>
+		/// <param name="target">The target string to remove, or null.</param>
+		/// <returns>A new string with the result.</returns>
+		public static string Remove(this string source, string target)
+		{
+			return source.Remove(target, StringComparison.CurrentCulture);
 		}
 
 		/// <summary>
@@ -122,18 +134,6 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Removes from the source string the first ocurrence of the target one, if any, returning
-		/// a new string with the result, using the current culture for comparisons.
-		/// </summary>
-		/// <param name="source">The source string.</param>
-		/// <param name="target">The target string to remove, or null.</param>
-		/// <returns>A new string with the result.</returns>
-		public static string Remove(this string source, string target)
-		{
-			return source.Remove(target, StringComparison.CurrentCulture);
-		}
-
-		/// <summary>
 		/// Removes from the source string the last ocurrence of the target one, if any, returning
 		/// a new string with the result, using the current culture for comparisons.
 		/// </summary>
@@ -147,7 +147,7 @@ namespace Kerosene.Tools
 
 		/// <summary>
 		/// Returns the zero-based index of the first ocurrence of the given target character in
-		/// the source string.
+		/// the source string, or -1 if it is not found.
 		/// </summary>
 		/// <param name="source">The source string.</param>
 		/// <param name="target">The character to find.</param>
@@ -187,20 +187,20 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Returns the zero-based index of the first ocurrence in the source string of an invalid
-		/// character not contained in the given array of valid ones.
+		/// Returns the zero-valid index of the first ocurrence in the source string that cannot be
+		/// considered as a valid character.
 		/// </summary>
 		/// <param name="source">The source string.</param>
-		/// <param name="valids">An array containing the valid characters.</param>
+		/// <param name="valids">An array containing the characters considered as valid ones.</param>
 		/// <param name="comparisonType">The rules to perform the comparisons.</param>
 		/// <returns>The zero-based index of the first ocurrence in the source string of an invalid
-		/// character not contained in the given array of valid ones.</returns>
+		/// character, or -1 if no one is found.</returns>
 		public static int IndexOfNotValid(this string source, char[] valids, StringComparison comparisonType)
 		{
 			if (source == null) throw new NullReferenceException("Source string cannot be null.");
-			if (valids == null) throw new ArgumentNullException("valids", "Array of characters is null.");
+			if (valids == null) throw new ArgumentNullException("any", "Array of characters is null.");
 
-			if (source.Length == 0) throw new EmptyException("Source string is empty.");
+			if (source.Length == 0) return -1; // Empty string has no invalid chars
 			if (valids.Length == 0) return 0;
 
 			var temp = new string(valids); for (int i = 0; i < source.Length; i++)
@@ -213,13 +213,13 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Returns the zero-based index of the first ocurrence in the source string of an invalid
-		/// character not contained in the given array of valid ones.
+		/// Returns the zero-valid index of the first ocurrence in the source string that cannot be
+		/// considered as a valid character.
 		/// </summary>
 		/// <param name="source">The source string.</param>
-		/// <param name="valids">An array containing the valid characters.</param>
+		/// <param name="valids">An array containing the characters considered as valid ones.</param>
 		/// <returns>The zero-based index of the first ocurrence in the source string of an invalid
-		/// character not contained in the given array of valid ones.</returns>
+		/// character, or -1 if no one is found.</returns>
 		public static int IndexOfNotValid(this string source, char[] valids)
 		{
 			return source.IndexOfNotValid(valids, StringComparison.CurrentCulture);
@@ -296,17 +296,17 @@ namespace Kerosene.Tools
 				"Lenght of {0} '{1}' is bigger than {2}."
 				.FormatWith(desc, source, maxLen));
 
-			if (valids != null)
-			{
-				int i = source.IndexOfNotValid(valids, comparisonType);
-				if (i > 0) throw new ArgumentException(
-					"{0} '{1}' contains invalid character '{2}'."
-					.FormatWith(desc, source, source[i]));
-			}
 			if (invalids != null)
 			{
 				int i = source.IndexOfAny(invalids, comparisonType);
-				if (i > 0) throw new ArgumentException(
+				if (i >= 0) throw new ArgumentException(
+					"{0} '{1}' contains invalid character '{2}'."
+					.FormatWith(desc, source, source[i]));
+			}
+			if (valids != null)
+			{
+				int i = source.IndexOfNotValid(valids, comparisonType);
+				if (i >= 0) throw new ArgumentException(
 					"{0} '{1}' contains invalid character '{2}'."
 					.FormatWith(desc, source, source[i]));
 			}

@@ -82,7 +82,8 @@ namespace Kerosene.Tools
 		{
 			name = null;
 
-			if (element == null) return new ArgumentNullException("element", "Element specification cannot be null.");
+			if (element == null) return
+				new ArgumentNullException("element", "Element specification cannot be null.");
 
 			DynamicParser parser = null;
 			object result = null;
@@ -129,7 +130,8 @@ namespace Kerosene.Tools
 			if (name == tag)
 			{
 				parser.Dispose();
-				return new ArgumentException("Expression '{0}' cannot resolve into its argument name.".FormatWith(parser));
+				return new ArgumentException(
+					"Expression '{0}' cannot resolve into its argument name.".FormatWith(parser));
 			}
 
 			tag = tag + ".";
@@ -164,7 +166,8 @@ namespace Kerosene.Tools
 				string pname = name.Left(index);
 				e = TryRead(host, x => pname, out host, flags);
 				if (e != null) return e;
-				if (host == null) return new EmptyException("Parent element '{0}' is empty.".FormatWith(pname));
+				if (host == null)
+					return new EmptyException("Parent element '{0}' is empty.".FormatWith(pname));
 
 				type = host.GetType();
 				name = name.Right(name.Length - index - 1);
@@ -175,7 +178,9 @@ namespace Kerosene.Tools
 				var prop = other.GetProperty(name, flags);
 				if (prop != null)
 				{
-					if (!prop.CanRead) return new CannotExecuteException("Element '{0}' cannot be read.".FormatWith(name));
+					if (!prop.CanRead)
+						return new CannotExecuteException("Element '{0}' cannot be read.".FormatWith(name));
+
 					value = prop.GetValue(host);
 					return null;
 				}

@@ -3,8 +3,8 @@ namespace Kerosene.Tools
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Dynamic;
+	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Text;
 
@@ -81,9 +81,7 @@ namespace Kerosene.Tools
 				if (_Parent != null && _Parent._Members != null) _Parent._Members.Remove(this);
 				if (_Members != null)
 				{
-					var list = new List<DeepObject>(_Members);
-					foreach (var member in list) member.Dispose();
-					list.Clear(); list = null;
+					var list = _Members.ToArray(); foreach (var member in list) member.Dispose();
 				}
 			}
 
@@ -439,7 +437,8 @@ namespace Kerosene.Tools
 			if (IsDisposed) throw new ObjectDisposedException(this.ToString());
 
 			var member = DeepFind(args); if (member != null)
-				throw new DuplicateException("Member '{0}' already exists in this '{1}'."
+				throw new DuplicateException(
+					"Member '{0}' already exists in this '{1}'."
 					.FormatWith(args.Sketch(), this));
 
 			var name = (args != null && args.Length == 1 && args[0] is string)
@@ -481,9 +480,7 @@ namespace Kerosene.Tools
 
 			if (disposeMembers)
 			{
-				var list = new List<DeepObject>(_Members);
-				foreach (var member in list) member.Dispose();
-				list.Clear();
+				var list = _Members.ToArray(); foreach (var member in list) member.Dispose();
 			}
 
 			_Members.Clear();

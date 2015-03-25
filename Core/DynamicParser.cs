@@ -47,7 +47,9 @@ namespace Kerosene.Tools
 			int index = 0;
 			foreach (var par in pars)
 			{
-				bool isDynamic = par.GetCustomAttributes(typeof(DynamicAttribute), true).Length != 0 ? true : false;
+				bool isDynamic =
+					par.GetCustomAttributes(typeof(DynamicAttribute), true).Length != 0 ? true : false;
+
 				if (isDynamic)
 				{
 					var dyn = new DynamicNode.Argument(par.Name) { Parser = parser };
@@ -113,12 +115,17 @@ namespace Kerosene.Tools
 			if (disposing)
 			{
 				if (_TentativeResult != null && _TentativeResult is DynamicNode)
-					((DynamicNode)_TentativeResult).Dispose();
-
-				if (_LastNode != null) _LastNode.Dispose();
-
-				var args = DynamicArguments;
-				if (args != null) foreach (var arg in args) arg.Dispose();
+				{
+					((DynamicNode)_TentativeResult).Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
+				}
+				if (_LastNode != null)
+				{
+					_LastNode.Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
+				}
+				var args = DynamicArguments; if (args != null)
+				{
+					foreach (var arg in args) arg.Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
+				}
 			}
 			if (_Arguments != null) _Arguments.Clear(); _Arguments = null;
 			_TentativeResult = null;
@@ -207,7 +214,7 @@ namespace Kerosene.Tools
 	public class DynamicNode
 		: IDynamicMetaObjectProvider, IDisposableEx, ISerializable, ICloneable, IEquivalent<DynamicNode>
 	{
-		private const bool DEFAULT_DISPOSE_PARENT = false;
+		internal const bool DEFAULT_DISPOSE_PARENT = false;
 		bool _IsDisposed = false;
 		DynamicNode _Host = null;
 		DynamicParser _Parser = null;
@@ -290,7 +297,7 @@ namespace Kerosene.Tools
 		/// <returns>A string containing the standard representation of this instance.</returns>
 		public override string ToString()
 		{
-			string str = GetType().ToString();
+			string str = GetType().EasyName();
 			return IsDisposed ? string.Format("disposed::{0})", str) : str;
 		}
 
@@ -410,7 +417,7 @@ namespace Kerosene.Tools
 		/// <para>
 		/// This method is provided to facilitate the manipulation of node trees, at the caller's
 		/// risk: there is no checks on whether the new reference is null, or if setting it to the
-		/// new value given would create cycles in the tree.
+		/// new value would create cycles in the tree, or on any other condition.
 		/// </para>
 		/// </summary>
 		/// <param name="newHost">The new host of this instance.</param>
@@ -530,12 +537,13 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as Argument; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as Argument; if (temp == null) return false;
 
-				if (_Name == temp._Name) return true;
+					if (string.Compare(_Name, temp.Name) != 0) return false;
+					return true;
+				}
 				return false;
 			}
 
@@ -665,12 +673,13 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as GetMember; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as GetMember; if (temp == null) return false;
 
-				if (_Name == temp._Name) return true;
+					if (string.Compare(_Name, temp.Name) != 0) return false;
+					return true;
+				}
 				return false;
 			}
 
@@ -820,15 +829,15 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as SetMember; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as SetMember; if (temp == null) return false;
 
-				if (_Name != temp._Name) return false;
-				if (!_Value.IsEquivalentTo(temp._Value)) return false;
-
-				return true;
+					if (string.Compare(_Name, temp.Name) != 0) return false;
+					if (!_Value.IsEquivalentTo(temp._Value)) return false;
+					return true;
+				}
+				return false;
 			}
 
 			/// <summary>
@@ -986,17 +995,18 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as GetIndexed; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as GetIndexed; if (temp == null) return false;
 
-				int thiscount = _Indexes == null ? 0 : _Indexes.Length;
-				int tempcount = temp._Indexes == null ? 0 : temp._Indexes.Length;
-				if (thiscount != tempcount) return false;
-				for (int i = 0; i < thiscount; i++) if (!_Indexes[i].IsEquivalentTo(temp._Indexes[i])) return false;
+					int thiscount = _Indexes == null ? 0 : _Indexes.Length;
+					int tempcount = temp._Indexes == null ? 0 : temp._Indexes.Length;
+					if (thiscount != tempcount) return false;
+					for (int i = 0; i < thiscount; i++) if (!_Indexes[i].IsEquivalentTo(temp._Indexes[i])) return false;
 
-				return true;
+					return true;
+				}
+				return false;
 			}
 
 			/// <summary>
@@ -1165,19 +1175,20 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as SetIndexed; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as SetIndexed; if (temp == null) return false;
 
-				int thiscount = _Indexes == null ? 0 : _Indexes.Length;
-				int tempcount = temp._Indexes == null ? 0 : temp._Indexes.Length;
-				if (thiscount != tempcount) return false;
-				for (int i = 0; i < thiscount; i++) if (!_Indexes[i].IsEquivalentTo(temp._Indexes[i])) return false;
+					int thiscount = _Indexes == null ? 0 : _Indexes.Length;
+					int tempcount = temp._Indexes == null ? 0 : temp._Indexes.Length;
+					if (thiscount != tempcount) return false;
+					for (int i = 0; i < thiscount; i++) if (!_Indexes[i].IsEquivalentTo(temp._Indexes[i])) return false;
 
-				if (!_Value.IsEquivalentTo(temp._Value)) return false;
+					if (!_Value.IsEquivalentTo(temp._Value)) return false;
 
-				return true;
+					return true;
+				}
+				return false;
 			}
 
 			/// <summary>
@@ -1344,20 +1355,21 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as Method; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as Method; if (temp == null) return false;
 
-				if (_Name != temp._Name) return false;
+					if (string.Compare(_Name, temp.Name) != 0) return false;
 
-				int thiscount = _Arguments == null ? 0 : _Arguments.Length;
-				int tempcount = temp._Arguments == null ? 0 : temp._Arguments.Length;
-				if (thiscount != tempcount) return false;
-				for (int i = 0; i < thiscount; i++)
-					if (!_Arguments[i].IsEquivalentTo(temp._Arguments[i])) return false;
+					int thiscount = _Arguments == null ? 0 : _Arguments.Length;
+					int tempcount = temp._Arguments == null ? 0 : temp._Arguments.Length;
+					if (thiscount != tempcount) return false;
+					for (int i = 0; i < thiscount; i++)
+						if (!_Arguments[i].IsEquivalentTo(temp._Arguments[i])) return false;
 
-				return true;
+					return true;
+				}
+				return false;
 			}
 
 			/// <summary>
@@ -1517,20 +1529,21 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as Invoke; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as Invoke; if (temp == null) return false;
 
-				int thiscount = _Arguments == null ? 0 : _Arguments.Length;
-				int tempcount = temp._Arguments == null ? 0 : temp._Arguments.Length;
-				if (thiscount != tempcount) return false;
-				for (int i = 0; i < thiscount; i++)
-					if (!_Arguments[i].IsEquivalentTo(temp._Arguments[i])) return false;
+					int thiscount = _Arguments == null ? 0 : _Arguments.Length;
+					int tempcount = temp._Arguments == null ? 0 : temp._Arguments.Length;
+					if (thiscount != tempcount) return false;
+					for (int i = 0; i < thiscount; i++)
+						if (!_Arguments[i].IsEquivalentTo(temp._Arguments[i])) return false;
 
-				return true;
+					return true;
+				}
+				return false;
 			}
-			
+
 			/// <summary>
 			/// The arguments used to invoke this instance, or null if no arguments were used or
 			/// if the array of arguments was empty.
@@ -1693,16 +1706,17 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as Binary; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as Binary; if (temp == null) return false;
 
-				if (_Operation != temp._Operation) return false;
-				if (!_Left.IsEquivalentTo(temp._Left)) return false;
-				if (!_Right.IsEquivalentTo(temp._Right)) return false;
+					if (_Operation != temp._Operation) return false;
+					if (!_Left.IsEquivalentTo(temp._Left)) return false;
+					if (!_Right.IsEquivalentTo(temp._Right)) return false;
 
-				return true;
+					return true;
+				}
+				return false;
 			}
 
 			/// <summary>
@@ -1862,15 +1876,16 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as Unary; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as Unary; if (temp == null) return false;
 
-				if (_Operation != temp._Operation) return false;
-				if (!_Target.IsEquivalentTo(temp._Target)) return false;
+					if (_Operation != temp._Operation) return false;
+					if (!_Target.IsEquivalentTo(temp._Target)) return false;
 
-				return true;
+					return true;
+				}
+				return false;
 			}
 
 			/// <summary>
@@ -2023,15 +2038,16 @@ namespace Kerosene.Tools
 			/// equivalent to the target instance given.</returns>
 			protected override bool OnEquivalentTo(object target)
 			{
-				if (object.ReferenceEquals(this, target)) return true;
-				var temp = target as Convert; if (temp == null) return false;
-				if (temp.IsDisposed) return false;
-				if (IsDisposed) return false;
+				if (base.OnEquivalentTo(target))
+				{
+					var temp = target as Convert; if (temp == null) return false;
 
-				if (_NewType != temp._NewType) return false;
-				if (!_Target.IsEquivalentTo(temp._Target)) return false;
+					if (_NewType != temp._NewType) return false;
+					if (!_Target.IsEquivalentTo(temp._Target)) return false;
 
-				return true;
+					return true;
+				}
+				return false;
 			}
 
 			/// <summary>
@@ -2063,7 +2079,8 @@ namespace Kerosene.Tools
 		/// Initializes a new instance.
 		/// </summary>
 		internal DynamicMetaNode(Expression parameter, BindingRestrictions rest, object value)
-			: base(parameter, rest, value) { }
+			: base(parameter, rest, value)
+		{ }
 
 		/// <summary>
 		/// Returns the array of underlying objects from a meta objects' array.

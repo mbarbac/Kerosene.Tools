@@ -9,34 +9,6 @@ namespace Kerosene.Tools
 	/// </summary>
 	public static class ConsoleEx
 	{
-		static bool _Interactive = false;
-
-		/// <summary>
-		/// Whether the current execution can be considered as an interactive one or not.
-		/// </summary>
-		public static bool Interactive
-		{
-			get { return _Interactive; }
-			set { _Interactive = value; }
-		}
-
-		/// <summary>
-		/// Ask the console user whether to execute the program in interactive mode or not, and
-		/// sets the <see cref="ConsoleEx.Interactive"/> flag correspondingly.
-		/// </summary>
-		/// <param name="header">The question presented to the user. If null a default string
-		/// is used.</param>
-		public static void AskInteractive(string header = null)
-		{
-			if (header == null) header = "\n=== Press [N] for non-interactive execution... ";
-
-			Interactive = true;
-			var str = ReadLine(header);
-			if (str.ToUpper() == "N") Interactive = false;
-
-			WriteLine();
-		}
-
 		/// <summary>
 		/// Writes the given message into the debug listeners and, if needed, into the console,
 		/// without adding a newline terminator.
@@ -50,7 +22,7 @@ namespace Kerosene.Tools
 
 #if DEBUG
 			DebugEx.Write(message);
-			if (!DebugEx.IsConsoleListenerAdded()) Console.Write(message);
+			if (!DebugEx.IsConsoleListenerRegistered) Console.Write(message);
 #else
 			Console.Write(message);
 #endif
@@ -69,7 +41,7 @@ namespace Kerosene.Tools
 
 #if DEBUG
 			DebugEx.WriteLine(message);
-			if (!DebugEx.IsConsoleListenerAdded()) Console.WriteLine(message);
+			if (!DebugEx.IsConsoleListenerRegistered) Console.WriteLine(message);
 #else
 			Console.WriteLine(message);
 #endif
@@ -92,6 +64,32 @@ namespace Kerosene.Tools
 			if (!Interactive) WriteLine();
 
 			return str;
+		}
+
+		/// <summary>
+		/// Whether the current execution can be considered as an interactive one or not.
+		/// </summary>
+		public static bool Interactive
+		{
+			get { return _Interactive; }
+			set { _Interactive = value; }
+		}
+		static bool _Interactive = false;
+
+		/// <summary>
+		/// Ask the console user whether to execute the program in interactive mode or not, and
+		/// sets the <see cref="ConsoleEx.Interactive"/> flag correspondingly.
+		/// </summary>
+		/// <param name="header">The question presented to the user. If null a default one is
+		/// used.</param>
+		public static void AskInteractive(string header = null)
+		{
+			if (header == null) header = "\n=== Press [N] for non-interactive execution... ";
+
+			Interactive = true;
+			var str = ReadLine(header);
+
+			if (str.ToUpper() == "N") Interactive = false;
 		}
 	}
 }
