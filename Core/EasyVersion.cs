@@ -2,6 +2,7 @@
 namespace Kerosene.Tools
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Runtime.Serialization;
@@ -386,7 +387,7 @@ namespace Kerosene.Tools
 		internal PartItem(bool isnumeric, string payload)
 		{
 			_IsNumeric = isnumeric;
-			_Payload = payload.Validated("Payload", canbeNull: true);
+			_Payload = payload.NullIfTrimmedIsEmpty();
 
 			if (_IsNumeric && _Payload != null)
 			{

@@ -5,7 +5,7 @@ namespace Kerosene.Tools
 
 	// ==================================================== 
 	/// <summary>
-	/// Represents a failed attempt of creating an object.
+	/// Represents a failed attempt of creating an arbitrary object.
 	/// </summary>
 	[Serializable]
 	public class CannotCreateException : Exception

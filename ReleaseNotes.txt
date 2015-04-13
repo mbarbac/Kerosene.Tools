@@ -1,0 +1,13 @@
+====================================================================================
+KEROSENE TOOLS
+Copyright (c) Moises Barba Cebeira 2008-2015. All rights reserved.
+====================================================================================
+VERSION 7.2.0:
+--------------
+-	ObjectEx.TryClone(): does not have any longer an optional argument to use a
+	parameterless Clone() method if such exists. Now this potential method is not
+	taken into consideration.
+-	MethodEx.MethodOnStack(): deprecated because going deep into the stack frame is
+	used rarely and for common scenarios is redundant with the framework methods. So
+	the workaround is to use the standard "MethodBase.GetCurrentMethod()" instead.
+====================================================================================

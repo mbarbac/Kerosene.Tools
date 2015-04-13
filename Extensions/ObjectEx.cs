@@ -129,7 +129,8 @@ namespace Kerosene.Tools
 				FieldInfo[] fields = type.GetFields(flags); foreach (var field in fields)
 				{
 					// Avoiding backing fields created for automatic properties...
-					int n = field.CustomAttributes.Where(x => x.AttributeType == typeof(CompilerGeneratedAttribute)).Count();
+					int n = field.CustomAttributes
+						.Where(x => x.AttributeType == typeof(CompilerGeneratedAttribute)).Count();
 					if (n == 0) list.Add(field);
 				}
 			}

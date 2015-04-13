@@ -2,6 +2,7 @@
 namespace Kerosene.Tools
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Dynamic;
 	using System.Linq;
@@ -306,7 +307,7 @@ namespace Kerosene.Tools
 		/// </summary>
 		public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			if (IsDisposed) throw new NotImplementedException(this.ToString());
+			if (IsDisposed) throw new ObjectDisposedException(this.ToString());
 			info.AddExtended("Host", _Host);
 		}
 

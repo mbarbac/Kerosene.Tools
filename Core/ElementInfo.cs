@@ -1,9 +1,7 @@
-﻿using System;
-// ======================================================== ElementInfo.cs
+﻿// ======================================================== ElementInfo.cs
 namespace Kerosene.Tools
 {
 	using System;
-	using System.Linq;
 	using System.Linq.Expressions;
 	using System.Reflection;
 

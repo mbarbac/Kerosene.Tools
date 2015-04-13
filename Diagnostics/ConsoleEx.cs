@@ -5,7 +5,7 @@ namespace Kerosene.Tools
 
 	// ==================================================== 
 	/// <summary>
-	/// Extends the console functionality.
+	/// Extends the <see cref="System.Console"/> functionality.
 	/// </summary>
 	public static class ConsoleEx
 	{
@@ -19,13 +19,11 @@ namespace Kerosene.Tools
 		{
 			if (message == null) message = string.Empty;
 			else if (args != null && args.Length != 0) message = string.Format(message, args);
-
 #if DEBUG
 			DebugEx.Write(message);
-			if (!DebugEx.IsConsoleListenerRegistered) Console.Write(message);
-#else
-			Console.Write(message);
+			if (!DebugEx.IsConsoleListenerRegistered)
 #endif
+				Console.Write(message);
 		}
 
 		/// <summary>
@@ -38,13 +36,11 @@ namespace Kerosene.Tools
 		{
 			if (message == null) message = string.Empty;
 			else if (args != null && args.Length != 0) message = string.Format(message, args);
-
 #if DEBUG
 			DebugEx.WriteLine(message);
-			if (!DebugEx.IsConsoleListenerRegistered) Console.WriteLine(message);
-#else
-			Console.WriteLine(message);
+			if (!DebugEx.IsConsoleListenerRegistered)
 #endif
+				Console.WriteLine(message);
 		}
 
 		/// <summary>

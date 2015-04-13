@@ -2,7 +2,7 @@
 namespace Kerosene.Tools
 {
 	using System;
-	using System.Diagnostics;
+	//using System.Diagnostics;
 	using System.Reflection;
 
 	// ==================================================== 
@@ -12,25 +12,6 @@ namespace Kerosene.Tools
 	/// </summary>
 	public static class MethodEx
 	{
-		/// <summary>
-		/// Gets the method at the given position in the calling stack, or null if this
-		/// information is not available.
-		/// </summary>
-		/// <param name="depth">The depth into the calling stack:
-		/// <para>- 0: the <see cref="MethodonStack"/> method.</para>
-		/// <para>- 1: the 'current' method (the one from which this one is called).</para>
-		/// <para>- 2: the caller of the 'current0 method.</para>
-		/// <para>Etc...</para>
-		/// </param>
-		/// <returns>The method reference, or null.</returns>
-		public static MethodBase MethodOnStack(uint depth = 1)
-		{
-			var stack = new StackTrace();
-			var frame = stack.GetFrame((int)depth);
-
-			return frame == null ? null : frame.GetMethod();
-		}
-
 		/// <summary>
 		/// Returns the name of this method, including the C#-alike name of the type that declares
 		/// it.

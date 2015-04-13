@@ -5,7 +5,7 @@ namespace Kerosene.Tools
 
 	// ==================================================== 
 	/// <summary>
-	/// Represents a failed attempt of finding an object when such is mandatory.
+	/// Represents a failed attempt of finding an object.
 	/// </summary>
 	[Serializable]
 	public class NotFoundException : Exception

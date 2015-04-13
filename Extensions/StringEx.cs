@@ -10,11 +10,12 @@ namespace Kerosene.Tools
 	public static class StringEx
 	{
 		/// <summary>
-		/// Returns a formatted string using the source one as the format specification.
+		/// Returns a formatted string using the source one as the format specification, and the
+		/// optional array of arguments given.
 		/// </summary>
 		/// <param name="source">The source string.</param>
-		/// <param name="args">An optional list of arguments to be used in the formatted string.</param>
-		/// <returns>The requested string.</returns>
+		/// <param name="args">An optional array of arguments.</param>
+		/// <returns>The formatted string.</returns>
 		public static string FormatWith(this string source, params object[] args)
 		{
 			if (source == null) throw new NullReferenceException("Source string cannot be null.");

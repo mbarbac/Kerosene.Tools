@@ -1,14 +1,20 @@
 <?xml version="1.0"?>
 <package >
-  <metadata>
-    <id>$id$</id>
-    <version>7.0.2</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Kerosene C# Dynamic Tools Library</description>
-    <copyright>Copyright (c) Moises Barba Cebeira 2008-2015</copyright>
-    <tags>Kerosene ORM Dynamic C# SQL Generics Lambda</tags>
-  </metadata>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$title$</title>
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<licenseUrl>http://www.codeproject.com/info/cpol10.aspx</licenseUrl>
+		<projectUrl>http://www.codeproject.com</projectUrl>
+		<requireLicenseAcceptance>true</requireLicenseAcceptance>
+		<description>Kerosene C# Dynamic Tools Library</description>
+		<copyright>Copyright (c) Moises Barba Cebeira 2008-2015</copyright>
+		<tags>Kerosene ORM Dynamic C# SQL Generics Lambda</tags>
+	</metadata>
+	<files>
+		<file src="License.txt" target="lib" />
+		<file src="ReleaseNotes.txt" target="lib" />
+	</files>
 </package>

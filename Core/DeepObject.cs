@@ -2,6 +2,7 @@
 namespace Kerosene.Tools
 {
 	using System;
+	using System.Collections;
 	using System.Collections.Generic;
 	using System.Dynamic;
 	using System.Linq;
@@ -14,7 +15,8 @@ namespace Kerosene.Tools
 	/// arbitrary depth.
 	/// </summary>
 	[Serializable]
-	public class DeepObject : DynamicObject, IDisposableEx, ISerializable, ICloneable, IEquivalent<DeepObject>
+	public class DeepObject
+		: DynamicObject, IDisposableEx, ISerializable, ICloneable, IEquivalent<DeepObject>
 	{
 		/// <summary>
 		/// Whether, by default, the names of the dynamic properties of DeepObject instances are
