@@ -1,9 +1,8 @@
-﻿// ======================================================== CannotExecuteException.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a failed attempt of executing an operation.
 	/// </summary>
@@ -31,4 +30,3 @@ namespace Kerosene.Tools
 		public CannotExecuteException(string message, Exception inner) : base(message, inner) { }
 	}
 }
-// ======================================================== 

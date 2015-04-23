@@ -1,9 +1,8 @@
-﻿// ======================================================== NotFoundException.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a failed attempt of finding an object.
 	/// </summary>
@@ -31,4 +30,3 @@ namespace Kerosene.Tools
 		public NotFoundException(string message, Exception inner) : base(message, inner) { }
 	}
 }
-// ======================================================== 

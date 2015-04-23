@@ -1,12 +1,11 @@
-﻿// ======================================================== IEquivalent.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Linq;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents the ability of an object to verify if it can be considered as equivalent to
 	/// a target instance of the given type, based upon any arbitrary criteria it implements.
@@ -22,9 +21,9 @@ namespace Kerosene.Tools
 		bool EquivalentTo(T target);
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Helpers and extensions for working with <see cref="Kerosene.Tools.IEquivalent"/> objects.
+	/// Helpers and extensions for working with 'IEquivalent' objects.
 	/// </summary>
 	public static class EquivalentEx
 	{
@@ -50,7 +49,10 @@ namespace Kerosene.Tools
 			return false;
 		}
 
-		private static bool WithIEquivalent(object source, object target)
+		/// <summary>
+		/// Equivalence through the IEquivalent interface.
+		/// </summary>
+		static bool WithIEquivalent(object source, object target)
 		{
 			Type sourceType = source.GetType();
 			Type targetType = target.GetType();
@@ -72,7 +74,10 @@ namespace Kerosene.Tools
 			return false;
 		}
 
-		private static bool WithIDictionary(object source, object target)
+		/// <summary>
+		/// Equivalence through the IDictionary interface.
+		/// </summary>
+		static bool WithIDictionary(object source, object target)
 		{
 			var sourceDic = source as IDictionary; if (sourceDic == null) return false;
 			var targetDic = target as IDictionary; if (targetDic == null) return false;
@@ -90,7 +95,10 @@ namespace Kerosene.Tools
 			return true;
 		}
 
-		private static bool WithIEnumerable(object source, object target)
+		/// <summary>
+		/// Equivalence through the IEnumerable interface.
+		/// </summary>
+		static bool WithIEnumerable(object source, object target)
 		{
 			var sourceEnum = source as IEnumerable; if (sourceEnum == null) return false;
 			var targetEnum = target as IEnumerable; if (targetEnum == null) return false;
@@ -117,4 +125,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

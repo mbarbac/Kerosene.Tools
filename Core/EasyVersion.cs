@@ -1,14 +1,11 @@
-﻿// ======================================================== EasyVersion.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
-	using System.Linq;
 	using System.Runtime.Serialization;
 	using System.Text;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a version specification composed by an arbitrary number of numeric,
 	/// alphanumeric or hybrid parts.
@@ -238,12 +235,12 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a part whithin a version specification.
 	/// </summary>
 	[Serializable]
-	internal class VersionPart : ISerializable, IComparable<VersionPart>, IEquivalent<VersionPart>
+	class VersionPart : ISerializable, IComparable<VersionPart>, IEquivalent<VersionPart>
 	{
 		List<PartItem> _List = new List<PartItem>();
 
@@ -371,12 +368,12 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a sub-item whithin a bersion part.
 	/// </summary>
 	[Serializable]
-	internal class PartItem : ISerializable, IComparable<PartItem>, IEquivalent<PartItem>
+	class PartItem : ISerializable, IComparable<PartItem>, IEquivalent<PartItem>
 	{
 		bool _IsNumeric = false;
 		string _Payload = null;
@@ -499,4 +496,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

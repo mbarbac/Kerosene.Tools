@@ -1,10 +1,9 @@
-﻿// ======================================================== CalendarDate.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Runtime.Serialization;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents an arbitrary date in a western calendar format.
 	/// <para>This class takes into consideration the Julian and Gregorian variations.</para>
@@ -504,4 +503,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

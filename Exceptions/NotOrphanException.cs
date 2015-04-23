@@ -1,9 +1,8 @@
-﻿// ======================================================== NotOrphanException.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents an attempt of using an object that cannot be considered as orphan when such is
 	/// needed.
@@ -32,4 +31,3 @@ namespace Kerosene.Tools
 		public NotOrphanException(string message, Exception inner) : base(message, inner) { }
 	}
 }
-// ======================================================== 

@@ -1,11 +1,10 @@
-﻿// ======================================================== ElementInfo.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Linq.Expressions;
 	using System.Reflection;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Provides an symetric way for treating both the fields and properties of a given type,
 	/// collectively known as 'members' for the operations of this class and related ones.
@@ -354,7 +353,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	public partial class ElementInfo
 	{
 		/// <summary>
@@ -460,4 +459,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

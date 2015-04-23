@@ -3,7 +3,10 @@ KEROSENE TOOLS
 Copyright (c) Moises Barba Cebeira 2008-2015. All rights reserved.
 ====================================================================================
 VERSION 7.2.0:
---------------
+-------------------
+-	General code refactoring.
+VERSION 7.0.5:
+-------------------
 -	ObjectEx.TryClone(): does not have any longer an optional argument to use a
 	parameterless Clone() method if such exists. Now this potential method is not
 	taken into consideration.

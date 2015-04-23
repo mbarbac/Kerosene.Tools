@@ -1,10 +1,9 @@
-﻿// ======================================================== ClockTime.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Runtime.Serialization;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a given moment in a day in a 24-hours clock format.
 	/// </summary>
@@ -426,7 +425,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Helpers and extensions for <see cref="ClockTime"/> objects.
 	/// </summary>
@@ -455,4 +454,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

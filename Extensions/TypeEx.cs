@@ -1,57 +1,49 @@
-﻿// ======================================================== TypeEx.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Reflection;
 	using System.Runtime.CompilerServices;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Helpers and extensions for working with <see cref="System.Type"/> instances.
+	/// Helpers and extensions for working with 'Type' instances.
 	/// </summary>
 	public static class TypeEx
 	{
 		/// <summary>
-		/// Returns the C#-alike name of the type.
+		/// returns the C#-alike name of the given type.
 		/// </summary>
-		/// <param name="type">The type.</param>
-		/// <param name="depth">The depth of the declaring chain to be included in the name of
-		/// tye type:
-		/// <para>- 0: only to include the name of the type.</para>
-		/// <para>- 1: to also include the name of the namespace or type where it is declared.</para>
-		/// <para>- n: include to the nth-level the names in the declaring chain.</para>
-		/// <para>- Use 'int.MaxValue' to assure the full path is included.</para>
-		/// </param>
-		/// <param name="genericNames">True to include the names of the generic type arguments, if
-		/// any, or false to leave them blank.</param>
-		/// <returns>The C#-alike name of the given type.</returns>
-		public static string EasyName(this Type type, int depth = 0, bool genericNames = false)
+		/// <param name="type">The type to obtain its easy name from.</param>
+		/// <param name="chain">True to include the declaring chain, or false to use only the type's
+		/// own name.</param>
+		/// <param name="generic">True to include the name of the generic type arguments, if any, or
+		/// false to leave them blank.</param>
+		/// <returns>The easy name requested.</returns>
+		public static string EasyName(this Type type, bool chain = false, bool generic = false)
 		{
 			if (type == null) throw new NullReferenceException("Type cannot be null.");
-			if (depth < 0) depth = -1 * depth;
-			if (depth >= int.MaxValue) depth = int.MaxValue - 2;
 
 			var str = type.FullName;
-			if (str == null) str = genericNames ? type.Name : string.Empty;
+			if (str == null) str = generic ? type.Name : string.Empty;
 
 			var i = str.IndexOf('[');
 			if (i >= 0) str = str.Substring(0, i); // CLR decoration not C# compliant...
 
 			var args = type.GetGenericArguments();
-			var index = 0;
-			var parts = str.Split(".+".ToCharArray()); for (int k = 0; k < parts.Length; k++)
+			var argx = 0;
+			var parts = str.Split(new[] { '.', '+' }); for (int k = 0; k < parts.Length; k++)
 			{
 				i = parts[k].IndexOf('`'); if (i >= 0)
 				{
-					var temps = parts[k].Split("`".ToCharArray());
+					var temps = parts[k].Split(new[] { '`' });
 					parts[k] = temps[0] + "<";
 
 					var num = int.Parse(temps[1]); for (int j = 0; j < num; j++)
 					{
 						if (j != 0) parts[k] += ",";
 
-						var arg = args[index++];
-						var name = arg.EasyName(depth, genericNames);
+						var arg = args[argx++];
+						var name = arg.EasyName(chain, generic);
 
 						if (name != string.Empty)
 						{
@@ -63,9 +55,8 @@ namespace Kerosene.Tools
 				}
 			}
 
-			int start = parts.Length - 1 - depth; if (start < 0) start = 0;
-			int count = parts.Length - start;
-			return string.Join(".", parts, start, count);
+			str = chain ? string.Join(".", parts) : parts[parts.Length - 1];
+			return str;
 		}
 
 		/// <summary>
@@ -116,4 +107,3 @@ namespace Kerosene.Tools
 		public const BindingFlags InstanceAndStatic = BindingFlags.Instance | BindingFlags.Static;
 	}
 }
-// ======================================================== 

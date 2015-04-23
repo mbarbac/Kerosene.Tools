@@ -1,11 +1,10 @@
-﻿// ======================================================== ConsoleEx.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Extends the <see cref="System.Console"/> functionality.
+	/// Extends the 'Console' functionality.
 	/// </summary>
 	public static class ConsoleEx
 	{
@@ -89,4 +88,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

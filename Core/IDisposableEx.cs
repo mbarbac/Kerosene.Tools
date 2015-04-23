@@ -1,11 +1,10 @@
-﻿// ======================================================== IDisposableEx.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Extends the <see cref="IDisposable"/> interface.
+	/// Extends the 'IDisposable' interface.
 	/// </summary>
 	public interface IDisposableEx : IDisposable
 	{
@@ -15,4 +14,3 @@ namespace Kerosene.Tools
 		bool IsDisposed { get; }
 	}
 }
-// ======================================================== 

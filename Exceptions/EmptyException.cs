@@ -1,9 +1,8 @@
-﻿// ======================================================== EmptyException.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents an attempt of using an object that can be considered as empty when such is not
 	/// allowed.
@@ -32,4 +31,3 @@ namespace Kerosene.Tools
 		public EmptyException(string message, Exception inner) : base(message, inner) { }
 	}
 }
-// ======================================================== 

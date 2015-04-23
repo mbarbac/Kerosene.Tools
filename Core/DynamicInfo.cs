@@ -1,5 +1,4 @@
-﻿// ======================================================== DynamicInfo.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using Microsoft.CSharp.RuntimeBinder;
 	using System;
@@ -9,7 +8,7 @@ namespace Kerosene.Tools
 	using System.Reflection;
 	using System.Runtime.CompilerServices;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represent an unified way to treat both properties and fields of a given instance when
 	/// its structure and members are non known at compile time, or when they have to be
@@ -66,7 +65,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	public static partial class DynamicInfo
 	{
 		/// <summary>
@@ -288,4 +287,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

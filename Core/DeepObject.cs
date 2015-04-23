@@ -1,5 +1,4 @@
-﻿// ======================================================== DeepObject.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Collections;
@@ -9,7 +8,7 @@ namespace Kerosene.Tools
 	using System.Runtime.Serialization;
 	using System.Text;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a multi-level dynamic object whose members can also be dynamic ones, to any
 	/// arbitrary depth.
@@ -589,4 +588,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

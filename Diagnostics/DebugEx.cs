@@ -1,13 +1,12 @@
-﻿// ======================================================== DebugEx.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Diagnostics;
 	using System.Linq;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Extends the debug environment.
+	/// Extends the 'Debug' functionality.
 	/// </summary>
 	public static class DebugEx
 	{
@@ -63,7 +62,8 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Adds the standard console listener if it has not been added yet.
+		/// Adds to the list of registered listeners the standard console one, if it has not been
+		/// added yet.
 		/// </summary>
 		public static void AddConsoleListener()
 		{
@@ -153,4 +153,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

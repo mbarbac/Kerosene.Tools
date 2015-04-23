@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>$id$</id>
-		<version>$version$</version>
+		<version>7.2.0</version>
 		<title>$title$</title>
 		<authors>$author$</authors>
 		<owners>$author$</owners>
@@ -13,8 +13,4 @@
 		<copyright>Copyright (c) Moises Barba Cebeira 2008-2015</copyright>
 		<tags>Kerosene ORM Dynamic C# SQL Generics Lambda</tags>
 	</metadata>
-	<files>
-		<file src="License.txt" target="lib" />
-		<file src="ReleaseNotes.txt" target="lib" />
-	</files>
 </package>

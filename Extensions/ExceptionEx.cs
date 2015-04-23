@@ -1,12 +1,11 @@
-﻿// ======================================================== ExceptionEx.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Text;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Helpers and extensions for working with <see cref="System.Exception"/> instances.
+	/// Helpers and extensions for working with 'Exception' instances.
 	/// </summary>
 	public static class ExceptionEx
 	{
@@ -31,4 +30,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

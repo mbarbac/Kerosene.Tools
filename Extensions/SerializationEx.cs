@@ -1,5 +1,4 @@
-﻿// ======================================================== SerializationEx.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Collections;
@@ -8,11 +7,11 @@ namespace Kerosene.Tools
 	using System.Runtime.Serialization.Formatters.Binary;
 	using System.Runtime.Serialization.Formatters.Soap;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Helpers and extensions for working with serialization scenarios.
 	/// </summary>
-	public static partial class SerializationEx
+	public static class SerializationEx
 	{
 		/// <summary>
 		/// Serializes the given object into this stream.
@@ -103,11 +102,7 @@ namespace Kerosene.Tools
 				return SerializationEx.Deserialize(sm, binary);
 			}
 		}
-	}
 
-	// ==================================================== 
-	public static partial class SerializationEx
-	{
 		/// <summary>
 		/// Adds into the serialization info the given entry, including its name, type and value.
 		/// </summary>
@@ -146,7 +141,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Used for easy serialization of complex types.
 	/// </summary>
@@ -289,4 +284,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 

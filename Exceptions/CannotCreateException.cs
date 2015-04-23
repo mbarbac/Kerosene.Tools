@@ -1,9 +1,8 @@
-﻿// ======================================================== CannotCreateException.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents a failed attempt of creating an arbitrary object.
 	/// </summary>
@@ -31,4 +30,3 @@ namespace Kerosene.Tools
 		public CannotCreateException(string message, Exception inner) : base(message, inner) { }
 	}
 }
-// ======================================================== 

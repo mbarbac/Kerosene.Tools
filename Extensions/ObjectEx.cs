@@ -1,5 +1,4 @@
-﻿// ======================================================== ObjectEx.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Collections;
@@ -10,9 +9,9 @@ namespace Kerosene.Tools
 	using System.Runtime.CompilerServices;
 	using System.Text;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Options for the Sketch method.
+	/// Options for the Object's 'Sketch()' method.
 	/// </summary>
 	[Flags]
 	public enum SketchOptions
@@ -46,9 +45,9 @@ namespace Kerosene.Tools
 		IncludeFields = 8,
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
-	/// Helpers and extensions for working with <see cref="System.Object"/> instances.
+	/// Helpers and extensions for working with 'Object' instances.
 	/// </summary>
 	public static class ObjectEx
 	{
@@ -154,10 +153,10 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Returns either a clone of the original object, if it implements the <see cref="ICloneable"/>
-		/// interface, or the original object.
+		/// Returns either a clone of the original object, if it implements the 'ICloneable' interface,
+		/// or the original object itself.
 		/// </summary>
-		/// <param name="obj">The object to clone.</param>
+		/// <param name="obj">The object to obtain a clone from.</param>
 		/// <returns>Either a clone of the original object or the original one itself.</returns>
 		public static object TryClone(this object obj)
 		{
@@ -170,11 +169,11 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Returns either a clone of the original object, if it implements the <see cref="ICloneable"/>
-		/// interface, or the original object.
+		/// Returns either a clone of the original object, if it implements the 'ICloneable' interface,
+		/// or the original object itself.
 		/// </summary>
-		/// <typeparam name="T">The type to cast of the object to clone.</typeparam>
-		/// <param name="obj">The object to clone.</param>
+		/// <typeparam name="T">The type to cast to the result of this method.</typeparam>
+		/// <param name="obj">The object to obtain a clone from.</param>
 		/// <returns>Either a clone of the original object or the original one itself.</returns>
 		public static T TryClone<T>(this T obj)
 		{
@@ -183,7 +182,7 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Converts the source object into an instance of the target type given.
+		/// Converts the source object into an instance of the given target type.
 		/// </summary>
 		/// <param name="obj">The source object.</param>
 		/// <param name="targetType">The type to convert the source object to.</param>
@@ -209,7 +208,7 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Converts the source object into an instance of the target type given.
+		/// Converts the source object into an instance of the given target type.
 		/// </summary>
 		/// <typeparam name="T">The type to convert the source object to.</typeparam>
 		/// <param name="obj">The source object.</param>
@@ -220,12 +219,12 @@ namespace Kerosene.Tools
 			return (T)temp;
 		}
 
-		private static Delegate LocateConverterDelegate(Type sourceType, Type targetType)
-		{
-			// Creates the delegate to invoke when conversions are needed.
-			// The following code is an adaptation of an original one of Richard Deeming.
-
-			string name = string.Format("{0}--{1}", sourceType.FullName, targetType.FullName);
+		/// <summary>
+		/// Creates the delegate to invoke when conversions are needed.
+		/// </summary>
+		/// <remarks>Following code is an adaptation of an original one proposed by Richard Deming.</remarks>
+		static Delegate LocateConverterDelegate(Type sourceType, Type targetType)
+		{string name = string.Format("{0}--{1}", sourceType.FullName, targetType.FullName);
 			Delegate ret = null; if (_Converters.TryGetValue(name, out ret)) return ret;
 
 			var input = Expression.Parameter(sourceType, "input");
@@ -244,7 +243,7 @@ namespace Kerosene.Tools
 			_Converters.Add(name, ret);
 			return ret;
 		}
+
 		static Dictionary<string, Delegate> _Converters = new Dictionary<string, Delegate>();
 	}
 }
-// ======================================================== 

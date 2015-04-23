@@ -1,5 +1,4 @@
-﻿// ======================================================== DynamicParser.cs
-namespace Kerosene.Tools
+﻿namespace Kerosene.Tools
 {
 	using System;
 	using System.Collections;
@@ -12,7 +11,7 @@ namespace Kerosene.Tools
 	using System.Runtime.Serialization;
 	using System.Text;
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents the ability of parsing an arbitrary dynamic lambda expression (DLE - defined
 	/// as a lambda expression where at least one of its arguments is a dynamic one) returning
@@ -29,6 +28,7 @@ namespace Kerosene.Tools
 		///   object, including null references, or a 'DynamicNode' instance if the expression
 		///   resolves into the definition of an arbitrary logic bounded to the dynamic arguments
 		///   used in it.
+		/// </para><para>
 		/// - Any not dynamic value or reference found in the expression, along with the result
 		///   of any standard method invoked in it, is captured at the moment when the expression
 		///   is parsed.
@@ -206,7 +206,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Represents an abstract node in the tree of logic operations discovered when parsing a
 	/// dynamic lambda expression.
@@ -2069,7 +2069,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ==================================================== 
+	// ====================================================
 	/// <summary>
 	/// Helper class to bind the dynamic operations with its dynamic arguments or derived
 	/// instances.
@@ -2283,4 +2283,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-// ======================================================== 
