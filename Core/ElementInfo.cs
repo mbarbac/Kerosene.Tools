@@ -1,9 +1,12 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Linq.Expressions;
-	using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Provides an symetric way for treating both the fields and properties of a given type,
@@ -143,7 +146,7 @@
 		{
 			if (IsDisposed) throw new ObjectDisposedException(this.ToString());
 			var temp = cloned as ElementInfo;
-			if (cloned == null) throw new InvalidCastException(
+			if (temp == null) throw new InvalidCastException(
 				"Cloned instance '{0}' is not a valid '{1}' one."
 				.FormatWith(cloned.Sketch(), typeof(ElementInfo).EasyName()));
 
@@ -356,6 +359,48 @@
 	// ====================================================
 	public partial class ElementInfo
 	{
+		/// <summary>
+		/// Gets a list containing the elements (properties and fields) found on the given type.
+		/// If the flags contains the 'FlattenHierarchy' one then the interfaces it may implement
+		/// are also taken into consideration.
+		/// </summary>
+		/// <param name="type">The type to obtain its elements from.</param>
+		/// <param name="flags">The flags to use to find the elements.</param>
+		/// <returns>A list with the elements found.</returns>
+		public static List<ElementInfo> GetElements(Type type, BindingFlags flags)
+		{
+			if (type == null) throw new ArgumentNullException("type", "Type cannot be null.");
+			List<ElementInfo> list = new List<ElementInfo>();
+
+			var props = type.GetProperties(flags); foreach (var prop in props)
+			{
+				if (list.Find(x => x.Name == prop.Name) == null) list.Add(new ElementInfo(prop));
+			}
+
+			var fields = type.GetFields(flags); foreach (var field in fields)
+			{
+				// Avoiding backing fields created for automatic properties...
+				int n = field.CustomAttributes.Where(x => x.AttributeType == typeof(CompilerGeneratedAttribute)).Count();
+				if (n != 0) continue;
+
+				if (list.Find(x => x.Name == field.Name) == null) list.Add(new ElementInfo(field));
+			}
+
+			if (flags.HasFlag(BindingFlags.FlattenHierarchy))
+			{
+				var ifaces = type.GetInterfaces(); foreach (var iface in ifaces)
+				{
+					var temp = GetElements(iface, flags);
+					foreach (var item in temp)
+						if (list.Find(x => x.Name == item.Name) == null) list.Add(item);
+
+					temp.Clear();
+				}
+			}
+
+			return list;
+		}
+
 		/// <summary>
 		/// Returns the name of the element the given expression resolves to. Multipart names
 		/// are allowed.

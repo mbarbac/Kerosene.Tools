@@ -1,10 +1,10 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Collections.Generic;
-	using System.Runtime.Serialization;
-	using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represents a version specification composed by an arbitrary number of numeric,
@@ -104,7 +104,7 @@
 		protected virtual void OnClone(object cloned)
 		{
 			var temp = cloned as EasyVersion;
-			if (cloned == null) throw new InvalidCastException(
+			if (temp == null) throw new InvalidCastException(
 				"Cloned instance '{0}' is not a valid '{1}' one."
 				.FormatWith(cloned.Sketch(), typeof(EasyVersion).EasyName()));
 

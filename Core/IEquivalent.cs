@@ -1,10 +1,10 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
-	using System.Linq;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represents the ability of an object to verify if it can be considered as equivalent to

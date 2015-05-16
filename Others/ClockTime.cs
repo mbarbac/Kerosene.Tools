@@ -1,8 +1,8 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represents a given moment in a day in a 24-hours clock format.
@@ -162,7 +162,7 @@
 		protected virtual void OnClone(object cloned)
 		{
 			var temp = cloned as ClockTime;
-			if (cloned == null) throw new InvalidCastException(
+			if (temp == null) throw new InvalidCastException(
 				"Cloned instance '{0}' is not a valid '{1}' one."
 				.FormatWith(cloned.Sketch(), typeof(ClockTime).EasyName()));
 

@@ -1,8 +1,8 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represents an arbitrary date in a western calendar format.
@@ -208,7 +208,7 @@
 		protected virtual void OnClone(object cloned)
 		{
 			var temp = cloned as CalendarDate;
-			if (cloned == null) throw new InvalidCastException(
+			if (temp == null) throw new InvalidCastException(
 				"Cloned instance '{0}' is not a valid '{1}' one."
 				.FormatWith(cloned.Sketch(), typeof(CalendarDate).EasyName()));
 

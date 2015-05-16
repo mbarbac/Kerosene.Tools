@@ -1,12 +1,12 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Collections;
-	using System.IO;
-	using System.Runtime.Serialization;
-	using System.Runtime.Serialization.Formatters.Binary;
-	using System.Runtime.Serialization.Formatters.Soap;
+﻿using System;
+using System.Collections;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Helpers and extensions for working with serialization scenarios.

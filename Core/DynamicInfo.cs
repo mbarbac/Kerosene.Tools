@@ -1,13 +1,13 @@
-﻿namespace Kerosene.Tools
-{
-	using Microsoft.CSharp.RuntimeBinder;
-	using System;
-	using System.Dynamic;
-	using System.Linq;
-	using System.Linq.Expressions;
-	using System.Reflection;
-	using System.Runtime.CompilerServices;
+﻿using Microsoft.CSharp.RuntimeBinder;
+using System;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represent an unified way to treat both properties and fields of a given instance when

@@ -1,7 +1,7 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
+﻿using System;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represents an attempt of using an object that can be considered as a duplicate when such

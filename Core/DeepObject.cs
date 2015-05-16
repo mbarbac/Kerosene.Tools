@@ -1,13 +1,13 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
-	using System.Dynamic;
-	using System.Linq;
-	using System.Runtime.Serialization;
-	using System.Text;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represents a multi-level dynamic object whose members can also be dynamic ones, to any
@@ -183,7 +183,7 @@
 		{
 			if (IsDisposed) throw new ObjectDisposedException(this.ToString());
 			var temp = cloned as DeepObject;
-			if (cloned == null) throw new InvalidCastException(
+			if (temp == null) throw new InvalidCastException(
 				"Cloned instance '{0}' is not a valid '{1}' one."
 				.FormatWith(cloned.Sketch(), typeof(DeepObject).EasyName()));
 

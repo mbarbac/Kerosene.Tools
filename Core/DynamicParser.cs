@@ -1,16 +1,16 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
-	using System.Dynamic;
-	using System.Linq;
-	using System.Linq.Expressions;
-	using System.Reflection;
-	using System.Runtime.CompilerServices;
-	using System.Runtime.Serialization;
-	using System.Text;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Text;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Represents the ability of parsing an arbitrary dynamic lambda expression (DLE - defined
@@ -342,7 +342,7 @@
 		{
 			if (IsDisposed) throw new ObjectDisposedException(this.ToString());
 			var temp = cloned as DynamicNode;
-			if (cloned == null) throw new InvalidCastException(
+			if (temp == null) throw new InvalidCastException(
 				"Cloned instance '{0}' is not a valid '{1}' one."
 				.FormatWith(cloned.Sketch(), typeof(DynamicNode).EasyName()));
 
@@ -511,7 +511,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as Argument;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(Argument).EasyName()));
 
@@ -647,7 +647,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as GetMember;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(GetMember).EasyName()));
 
@@ -802,7 +802,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as SetMember;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(SetMember).EasyName()));
 
@@ -967,7 +967,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as GetIndexed;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(GetIndexed).EasyName()));
 
@@ -1145,7 +1145,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as SetIndexed;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(SetIndexed).EasyName()));
 
@@ -1325,7 +1325,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as Method;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(Method).EasyName()));
 
@@ -1501,7 +1501,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as Invoke;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(Invoke).EasyName()));
 
@@ -1678,7 +1678,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as Binary;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(Binary).EasyName()));
 
@@ -1849,7 +1849,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as Unary;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(Unary).EasyName()));
 
@@ -2011,7 +2011,7 @@
 			{
 				base.OnClone(cloned);
 				var temp = cloned as Convert;
-				if (cloned == null) throw new InvalidCastException(
+				if (temp == null) throw new InvalidCastException(
 					"Cloned instance '{0}' is not a valid '{1}' one."
 					.FormatWith(cloned.Sketch(), typeof(Convert).EasyName()));
 

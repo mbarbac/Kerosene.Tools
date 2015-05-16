@@ -1,9 +1,9 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Reflection;
-	using System.Runtime.CompilerServices;
+﻿using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'Type' instances.
@@ -16,18 +16,29 @@
 		/// <param name="type">The type to obtain its easy name from.</param>
 		/// <param name="chain">True to include the declaring chain, or false to use only the type's
 		/// own name.</param>
-		/// <param name="generic">True to include the name of the generic type arguments, if any, or
+		/// <param name="genericNames">True to include the name of the generic type arguments, if any, or
 		/// false to leave them blank.</param>
+		/// <param name="nonGenericNames">True to include the name of the non-generic type arguments, if any,
+		/// or false to leave them blank.</param>
 		/// <returns>The easy name requested.</returns>
-		public static string EasyName(this Type type, bool chain = false, bool generic = false)
+		public static string EasyName(
+			this Type type,
+			bool chain = false,
+			bool genericNames = false,
+			bool nonGenericNames = true)
 		{
 			if (type == null) throw new NullReferenceException("Type cannot be null.");
 
-			var str = type.FullName;
-			if (str == null) str = generic ? type.Name : string.Empty;
+			var str = type.FullName ?? type.Name ?? string.Empty;
 
 			var i = str.IndexOf('[');
 			if (i >= 0) str = str.Substring(0, i); // CLR decoration not C# compliant...
+
+			if (!type.IsGenericParameter)
+			{
+				var space = type.Namespace + ".";
+				if (chain && !str.StartsWith(space)) str = space + str;
+			}
 
 			var args = type.GetGenericArguments();
 			var argx = 0;
@@ -43,14 +54,24 @@
 						if (j != 0) parts[k] += ",";
 
 						var arg = args[argx++];
-						var name = arg.EasyName(chain, generic);
+						var name = (string)null;
 
-						if (name != string.Empty)
+						if (arg.IsGenericParameter)
+						{
+							if (genericNames) name = arg.EasyName(chain, genericNames, nonGenericNames);
+						}
+						else
+						{
+							if (nonGenericNames) name = arg.EasyName(chain, genericNames, nonGenericNames);
+						}
+
+						if ((name = name.NullIfTrimmedIsEmpty()) != null)
 						{
 							if (j != 0) parts[k] += " ";
 							parts[k] += name;
 						}
 					}
+
 					parts[k] += ">";
 				}
 			}
@@ -105,5 +126,67 @@
 		/// Binding flags for instance and static elements.
 		/// </summary>
 		public const BindingFlags InstanceAndStatic = BindingFlags.Instance | BindingFlags.Static;
+
+		/// <summary>
+		/// Binding flags for public and hidden elements in the instance and in the hierarchy.
+		/// </summary>
+		public const BindingFlags FlattenInstancePublicAndHidden = InstancePublicAndHidden | BindingFlags.FlattenHierarchy;
+
+		/// <summary>
+		/// Returns whether the type implements the given base type, including base types with
+		/// an arbitrary number of generic of non-generic arguments.
+		/// </summary>
+		/// <param name="type">The type to test.</param>
+		/// <param name="parent">The base type.</param>
+		/// <returns>True if the type implements the base type, false otherwise.</returns>
+		public static bool Implements(this Type type, Type parent)
+		{
+			if (type == null) throw new ArgumentNullException("type", "Type to test cannot be null.");
+			if (parent == null) throw new ArgumentNullException("parent", "Parent type cannot be null.");
+
+			var stype = ImplementChain(type, true);
+			var sbase = ImplementChain(parent, true);
+			if (stype.StartsWith(sbase)) return true;
+
+			stype = ImplementChain(type, false);
+			if (stype.StartsWith(sbase)) return true;
+
+			var temp = type.BaseType;
+			if (temp != null && temp.Implements(parent)) return true;
+
+			var ifaces = type.GetInterfaces();
+			foreach (var iface in ifaces) if (iface.Implements(parent)) return true;
+
+			return false;
+		}
+
+		/// <summary>
+		/// Helper method to obtain the string representation of the inheritance chain.
+		/// </summary>
+		static string ImplementChain(Type type, bool nonGenericNames)
+		{
+			var parent = type.BaseType;
+			var str = parent == null ? type.Namespace : ImplementChain(parent, nonGenericNames);
+
+			var name = type.Name;
+			var n = name.IndexOf('`'); if (n >= 0) name = name.Substring(0, n);
+			str = string.Format("{0}.{1}", str, name);
+
+			var args = type.GetGenericArguments(); if (args.Length != 0)
+			{
+				str += "<"; for (int i = 0; i < args.Length; i++)
+				{
+					if (i != 0) str += ",";
+
+					var arg = args[i]; if (!arg.IsGenericParameter && nonGenericNames)
+					{
+						if (i != 0) str += " ";
+						str += ImplementChain(arg, nonGenericNames);
+					}
+				}
+				str += ">";
+			}
+			return str;
+		}
 	}
 }

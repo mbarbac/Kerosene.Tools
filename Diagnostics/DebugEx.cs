@@ -1,9 +1,9 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Diagnostics;
-	using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Extends the 'Debug' functionality.

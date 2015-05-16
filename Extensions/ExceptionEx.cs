@@ -1,8 +1,8 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
-	using System.Text;
+﻿using System;
+using System.Text;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'Exception' instances.

@@ -1,7 +1,7 @@
-﻿namespace Kerosene.Tools
-{
-	using System;
+﻿using System;
 
+namespace Kerosene.Tools
+{
 	// ====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'String' instances.
