@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents the ability of parsing an arbitrary dynamic lambda expression (DLE - defined
 	/// as a lambda expression where at least one of its arguments is a dynamic one) returning
@@ -102,11 +102,6 @@ namespace Kerosene.Tools
 			if (!IsDisposed) { OnDispose(true); GC.SuppressFinalize(this); }
 		}
 
-		~DynamicParser()
-		{
-			if (!IsDisposed) OnDispose(false);
-		}
-
 		/// <summary>
 		/// Invoked when disposing or finalizing this instance.
 		/// </summary>
@@ -115,20 +110,27 @@ namespace Kerosene.Tools
 		{
 			if (disposing)
 			{
-				if (_TentativeResult != null && _TentativeResult is DynamicNode)
+				try
 				{
-					((DynamicNode)_TentativeResult).Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
-				}
-				if (_LastNode != null)
-				{
-					_LastNode.Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
-				}
-				var args = DynamicArguments; if (args != null)
-				{
+					if (_TentativeResult != null && _TentativeResult is DynamicNode)
+					{
+						((DynamicNode)_TentativeResult).Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
+					}
+					if (_LastNode != null)
+					{
+						_LastNode.Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
+					}
+
+					var args = DynamicArguments.ToArray();
 					foreach (var arg in args) arg.Dispose(DynamicNode.DEFAULT_DISPOSE_PARENT);
+					Array.Clear(args, 0, args.Length);
+
+					if (_Arguments != null) _Arguments.Clear();
 				}
+				catch { }
 			}
-			if (_Arguments != null) _Arguments.Clear(); _Arguments = null;
+
+			_Arguments = null;
 			_TentativeResult = null;
 			_LastNode = null;
 
@@ -206,7 +208,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents an abstract node in the tree of logic operations discovered when parsing a
 	/// dynamic lambda expression.
@@ -265,11 +267,6 @@ namespace Kerosene.Tools
 			if (!IsDisposed) { OnDispose(true, disposeParent); GC.SuppressFinalize(this); }
 		}
 
-		~DynamicNode()
-		{
-			if (!IsDisposed) OnDispose(false, DEFAULT_DISPOSE_PARENT);
-		}
-
 		/// <summary>
 		/// Invoked when disposing or finalizing this instance.
 		/// </summary>
@@ -280,15 +277,19 @@ namespace Kerosene.Tools
 		{
 			if (disposing)
 			{
-				if (disposeHost && _Host != null && !_Host.IsDisposed)
+				try
 				{
-					var host = _Host; _Host = null; // Avoid re-entrance
-					host.Dispose(disposeHost);
+					if (disposeHost && _Host != null)
+					{
+						var host = _Host; _Host = null; // Avoid re-entrance
+						host.Dispose(disposeHost);
+					}
 				}
-			}
-			_Host = null;
-			_Parser = null;
+				catch { }
 
+				_Host = null;
+				_Parser = null;
+			}
 			_IsDisposed = true;
 		}
 
@@ -428,7 +429,7 @@ namespace Kerosene.Tools
 			_Host = newHost;
 		}
 
-		// ================================================
+		// ==================================================
 		/// <summary>
 		/// Represents an argument in a dynamic lambda expression, as in 'x => ...'.
 		/// </summary>
@@ -730,17 +731,21 @@ namespace Kerosene.Tools
 			{
 				if (disposing)
 				{
-					if (_Value != null)
+					try
 					{
-						var node = _Value as DynamicNode; if (node != null)
+						if (_Value != null)
 						{
-							if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
-							node.Dispose(disposeHost);
+							var node = _Value as DynamicNode; if (node != null)
+							{
+								if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
+								node.Dispose(disposeHost);
+							}
 						}
 					}
-				}
-				_Value = null;
+					catch { }
 
+					_Value = null;
+				}
 				base.OnDispose(disposing, disposeHost);
 			}
 
@@ -893,22 +898,26 @@ namespace Kerosene.Tools
 			{
 				if (disposing)
 				{
-					if (_Indexes != null)
+					try
 					{
-						for (int i = 0; i < _Indexes.Length; i++)
+						if (_Indexes != null)
 						{
-							var node = _Indexes[i] as DynamicNode;
-							if (node != null)
+							for (int i = 0; i < _Indexes.Length; i++)
 							{
-								if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
-								node.Dispose(disposeHost);
+								var node = _Indexes[i] as DynamicNode;
+								if (node != null)
+								{
+									if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
+									node.Dispose(disposeHost);
+								}
 							}
+							Array.Clear(_Indexes, 0, _Indexes.Length);
 						}
-						Array.Clear(_Indexes, 0, _Indexes.Length);
 					}
-				}
-				_Indexes = null;
+					catch { }
 
+					_Indexes = null;
+				}
 				base.OnDispose(disposing, disposeHost);
 			}
 
@@ -1056,34 +1065,45 @@ namespace Kerosene.Tools
 			/// hosted by, if any.</param>
 			protected override void OnDispose(bool disposing, bool disposeHost)
 			{
+				//if (disposing)
+				//{
+				
+				//}
+				
+
 				if (disposing)
 				{
-					if (_Indexes != null)
+					try
 					{
-						for (int i = 0; i < _Indexes.Length; i++)
+						if (_Indexes != null)
 						{
-							var node = _Indexes[i] as DynamicNode;
+							for (int i = 0; i < _Indexes.Length; i++)
+							{
+								var node = _Indexes[i] as DynamicNode;
+								if (node != null)
+								{
+									if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
+									node.Dispose(disposeHost);
+								}
+							}
+							Array.Clear(_Indexes, 0, _Indexes.Length);
+						}
+
+						if (_Value != null)
+						{
+							var node = _Value as DynamicNode;
 							if (node != null)
 							{
 								if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
 								node.Dispose(disposeHost);
 							}
 						}
-						Array.Clear(_Indexes, 0, _Indexes.Length);
 					}
-					if (_Value != null)
-					{
-						var node = _Value as DynamicNode;
-						if (node != null)
-						{
-							if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
-							node.Dispose(disposeHost);
-						}
-					}
-				}
-				_Indexes = null;
-				_Value = null;
+					catch { }
 
+					_Indexes = null;
+					_Value = null;
+				}
 				base.OnDispose(disposing, disposeHost);
 			}
 
@@ -1248,22 +1268,26 @@ namespace Kerosene.Tools
 			{
 				if (disposing)
 				{
-					if (_Arguments != null)
+					try
 					{
-						for (int i = 0; i < _Arguments.Length; i++)
+						if (_Arguments != null)
 						{
-							var node = _Arguments[i] as DynamicNode;
-							if (node != null)
+							for (int i = 0; i < _Arguments.Length; i++)
 							{
-								if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
-								node.Dispose(disposeHost);
+								var node = _Arguments[i] as DynamicNode;
+								if (node != null)
+								{
+									if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
+									node.Dispose(disposeHost);
+								}
 							}
+							Array.Clear(_Arguments, 0, _Arguments.Length);
 						}
-						Array.Clear(_Arguments, 0, _Arguments.Length);
 					}
-				}
-				_Arguments = null;
+					catch { }
 
+					_Arguments = null;
+				}
 				base.OnDispose(disposing, disposeHost);
 			}
 
@@ -1427,21 +1451,26 @@ namespace Kerosene.Tools
 			{
 				if (disposing)
 				{
-					if (_Arguments != null)
+					try
 					{
-						for (int i = 0; i < _Arguments.Length; i++)
+						if (_Arguments != null)
 						{
-							var node = _Arguments[i] as DynamicNode;
-							if (node != null)
+							for (int i = 0; i < _Arguments.Length; i++)
 							{
-								if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
-								node.Dispose(disposeHost);
+								var node = _Arguments[i] as DynamicNode;
+								if (node != null)
+								{
+									if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
+									node.Dispose(disposeHost);
+								}
 							}
+							Array.Clear(_Arguments, 0, _Arguments.Length);
 						}
-						Array.Clear(_Arguments, 0, _Arguments.Length);
 					}
+					catch { }
+
+					_Arguments = null;
 				}
-				_Arguments = null;
 
 				base.OnDispose(disposing, disposeHost);
 			}
@@ -1573,7 +1602,7 @@ namespace Kerosene.Tools
 			/// Initializes a new instance.
 			/// </summary>
 			/// <param name="left">The left node of the operation.</param>
-			/// <param name="operation">The operation that binds both arguments.</param>
+			/// <param name="op">The operation that binds both arguments.</param>
 			/// <param name="right">The right node of the operation.</param>
 			public Binary(DynamicNode left, ExpressionType op, object right)
 			{
@@ -1597,23 +1626,28 @@ namespace Kerosene.Tools
 			{
 				if (disposing)
 				{
-					if (_Left != null)
+					try
 					{
-						if (disposeHost && _Left.IsNodeAncestor(this)) _Left._Host = null;
-						_Left.Dispose(disposeHost);
-					}
-					if (_Right != null)
-					{
-						var node = _Right as DynamicNode;
-						if (node != null)
+						if (_Left != null)
 						{
-							if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
-							node.Dispose(disposeHost);
+							if (disposeHost && _Left.IsNodeAncestor(this)) _Left._Host = null;
+							_Left.Dispose(disposeHost);
+						}
+						if (_Right != null)
+						{
+							var node = _Right as DynamicNode;
+							if (node != null)
+							{
+								if (disposeHost && node.IsNodeAncestor(this)) node._Host = null;
+								node.Dispose(disposeHost);
+							}
 						}
 					}
+					catch { }
+
+					_Left = null;
+					_Right = null;
 				}
-				_Left = null;
-				_Right = null;
 
 				base.OnDispose(disposing, disposeHost);
 			}
@@ -1761,7 +1795,7 @@ namespace Kerosene.Tools
 			/// <summary>
 			/// Initializes a new instance.
 			/// </summary>
-			/// <param name="operation">The operation that binds the target argument.</param>
+			/// <param name="op">The operation that binds the target argument.</param>
 			/// <param name="target">The target node of the operation.</param>
 			public Unary(ExpressionType op, DynamicNode target)
 			{
@@ -1781,13 +1815,18 @@ namespace Kerosene.Tools
 			{
 				if (disposing)
 				{
-					if (_Target != null)
+					try
 					{
-						if (disposeHost && _Target.IsNodeAncestor(this)) _Target._Host = null;
-						_Target.Dispose(disposeHost);
+						if (_Target != null)
+						{
+							if (disposeHost && _Target.IsNodeAncestor(this)) _Target._Host = null;
+							_Target.Dispose(disposeHost);
+						}
 					}
+					catch { }
+
+					_Target = null;
 				}
-				_Target = null;
 
 				base.OnDispose(disposing, disposeHost);
 			}
@@ -1942,14 +1981,19 @@ namespace Kerosene.Tools
 			{
 				if (disposing)
 				{
-					if (_Target != null)
+					try
 					{
-						if (disposeHost && _Target.IsNodeAncestor(this)) _Target._Host = null;
-						_Target.Dispose(disposeHost);
+						if (_Target != null)
+						{
+							if (disposeHost && _Target.IsNodeAncestor(this)) _Target._Host = null;
+							_Target.Dispose(disposeHost);
+						}
 					}
+					catch { }
+
+					_Target = null;
+					_NewType = null;
 				}
-				_Target = null;
-				_NewType = null;
 
 				base.OnDispose(disposing, disposeHost);
 			}
@@ -2069,7 +2113,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Helper class to bind the dynamic operations with its dynamic arguments or derived
 	/// instances.

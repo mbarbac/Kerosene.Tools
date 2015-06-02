@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents an attempt of using an object that can be considered as a duplicate when such
 	/// is not allowed.

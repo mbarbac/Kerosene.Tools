@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'Char' instances.
 	/// </summary>

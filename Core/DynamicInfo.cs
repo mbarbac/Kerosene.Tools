@@ -1,10 +1,13 @@
 ﻿using Microsoft.CSharp.RuntimeBinder;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Kerosene.Tools
 {
@@ -65,7 +68,7 @@ namespace Kerosene.Tools
 		}
 	}
 
-	// ====================================================
+	// =====================================================
 	public static partial class DynamicInfo
 	{
 		/// <summary>
@@ -93,6 +96,7 @@ namespace Kerosene.Tools
 				if (parser != null) parser.Dispose();
 				return e;
 			}
+
 			if ((result = parser.Result) == null)
 			{
 				parser.Dispose();

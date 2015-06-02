@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents an attempt of using an object that cannot be considered as orphan when such is
 	/// needed.

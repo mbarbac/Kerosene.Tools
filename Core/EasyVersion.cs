@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents a version specification composed by an arbitrary number of numeric,
 	/// alphanumeric or hybrid parts.
@@ -154,26 +156,37 @@ namespace Kerosene.Tools
 			return payload == null ? base.GetHashCode() : payload.GetHashCode();
 		}
 
+		/// <summary></summary>
 		public static bool operator >(EasyVersion left, EasyVersion right)
 		{
 			return Compare(left, right) > 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator <(EasyVersion left, EasyVersion right)
 		{
 			return Compare(left, right) < 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator >=(EasyVersion left, EasyVersion right)
 		{
 			return Compare(left, right) >= 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator <=(EasyVersion left, EasyVersion right)
 		{
 			return Compare(left, right) <= 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator ==(EasyVersion left, EasyVersion right)
 		{
 			return Compare(left, right) == 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator !=(EasyVersion left, EasyVersion right)
 		{
 			return Compare(left, right) != 0;

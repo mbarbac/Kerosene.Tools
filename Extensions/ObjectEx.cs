@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Options for the Object's 'Sketch()' method.
 	/// </summary>
@@ -43,9 +43,14 @@ namespace Kerosene.Tools
 		/// skectch of a given object.
 		/// </summary>
 		IncludeFields = 8,
+
+		/// <summary>
+		/// To include the type name sorrounding the contents.
+		/// </summary>
+		WithTypeName = 16
 	}
 
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'Object' instances.
 	/// </summary>
@@ -55,7 +60,7 @@ namespace Kerosene.Tools
 		/// Returns an alternate string representation of the given object.
 		/// </summary>
 		/// <param name="obj">The object to obtains its alternate string representation from.</param>
-		/// <param name="op">Optional options to obtain the representation.</param>
+		/// <param name="ops">Optional options to obtain the representation.</param>
 		/// <returns>The requested alternate string representation.</returns>
 		public static string Sketch(this object obj, SketchOptions ops = SketchOptions.Default)
 		{
@@ -80,6 +85,7 @@ namespace Kerosene.Tools
 			ops &= ~SketchOptions.RoundedBrackets; // Rounded brackest for this level only...
 
 			StringBuilder sb = new StringBuilder();
+			if (ops.HasFlag(SketchOptions.WithTypeName)) sb.AppendFormat("{0}(", type.EasyName());
 
 			// IDictionary...
 			if (obj is IDictionary)
@@ -93,6 +99,7 @@ namespace Kerosene.Tools
 				}
 				sb.Append(end);
 
+				if (ops.HasFlag(SketchOptions.WithTypeName)) sb.Append(")");
 				return sb.ToString();
 			}
 
@@ -110,6 +117,8 @@ namespace Kerosene.Tools
 				sb.Append(end);
 
 				if (iter is IDisposable) ((IDisposable)iter).Dispose();
+
+				if (ops.HasFlag(SketchOptions.WithTypeName)) sb.Append(")");
 				return sb.ToString();
 			}
 
@@ -138,14 +147,21 @@ namespace Kerosene.Tools
 			{
 				var first = true; sb.Append("{"); foreach (var info in list)
 				{
-					object v = info.MemberType == MemberTypes.Field
+					object v = null; try
+					{
+						v = info.MemberType == MemberTypes.Field
 						? ((FieldInfo)info).GetValue(obj)
 						: ((PropertyInfo)info).GetValue(obj);
+					}
+					catch { }
 
 					if (first) first = false; else sb.Append(", ");
 					sb.AppendFormat("{0} = {1}", info.Name, v.Sketch(ops));
 				}
-				sb.Append("}"); return sb.ToString();
+				sb.Append("}");
+
+				if (ops.HasFlag(SketchOptions.WithTypeName)) sb.Append(")");
+				return sb.ToString();
 			}
 
 			// Default case...
@@ -224,7 +240,8 @@ namespace Kerosene.Tools
 		/// </summary>
 		/// <remarks>Following code is an adaptation of an original one proposed by Richard Deming.</remarks>
 		static Delegate LocateConverterDelegate(Type sourceType, Type targetType)
-		{string name = string.Format("{0}--{1}", sourceType.FullName, targetType.FullName);
+		{
+			string name = string.Format("{0}--{1}", sourceType.FullName, targetType.FullName);
 			Delegate ret = null; if (_Converters.TryGetValue(name, out ret)) return ret;
 
 			var input = Expression.Parameter(sourceType, "input");

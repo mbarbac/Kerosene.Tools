@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents an arbitrary date in a western calendar format.
 	/// <para>This class takes into consideration the Julian and Gregorian variations.</para>
@@ -29,7 +33,7 @@ namespace Kerosene.Tools
 		///  Validates that the given month value is valid.
 		/// <para>Valid month values are from 1 to 12 both included.</para>
 		/// </summary>
-		/// <param name="month">The month value to validate./param>
+		/// <param name="month">The month value to validate.</param>
 		public static void ValidateMonth(int month)
 		{
 			if (month < 1) throw new ArgumentException("Month '{0}' cannot be less than 1.".FormatWith(month));
@@ -268,26 +272,37 @@ namespace Kerosene.Tools
 			return base.GetHashCode();
 		}
 
+		/// <summary></summary>
 		public static bool operator >(CalendarDate left, CalendarDate right)
 		{
 			return Compare(left, right) > 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator <(CalendarDate left, CalendarDate right)
 		{
 			return Compare(left, right) < 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator >=(CalendarDate left, CalendarDate right)
 		{
 			return Compare(left, right) >= 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator <=(CalendarDate left, CalendarDate right)
 		{
 			return Compare(left, right) <= 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator ==(CalendarDate left, CalendarDate right)
 		{
 			return Compare(left, right) == 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator !=(CalendarDate left, CalendarDate right)
 		{
 			return Compare(left, right) != 0;
@@ -322,22 +337,63 @@ namespace Kerosene.Tools
 		/// <summary>
 		/// Parsers the given string and creates a new CalendarDate instance.
 		/// </summary>
-		/// <param name="str">The source string, with the expressed in the universal "yyyy-mm-dd" format.</param>
+		/// <param name="str">The source string, with the expressed in the universal "yyyy-mm-dd"
+		/// format, or the "yyyymmdd" one.</param>
 		/// <param name="separators">If not null the characters to use as field separators.</param>
 		/// <returns>A new CalendarDate instance.</returns>
 		public static CalendarDate Parse(string str, char[] separators = null)
 		{
-			if (str == null) throw new ArgumentNullException("str", "String to parse cannot be null.");
+			CalendarDate value = null;
+			Exception e = TryParse(out value, str, separators);
+
+			if (e != null) throw e;
+			return value;
+		}
+
+		/// <summary>
+		/// Tries to paser the given string and creates a new CalendarDate instance, returning null in
+		/// case of any errors or an exception describing the error.
+		/// </summary>
+		/// <param name="value">The value where to place the result.</param>
+		/// <param name="str">The source string, with the expressed in the universal "yyyy-mm-dd"
+		/// format, or the "yyyymmdd" one.</param>
+		/// <param name="separators">If not null the characters to use as field separators.</param>
+		/// <returns>A new CalendarDate instance.</returns>
+		public static Exception TryParse(out CalendarDate value, string str, char[] separators = null)
+		{
+			value = null;
+			int year = 0, month = 0, day = 0;
+
+			str = str.NullIfTrimmedIsEmpty();
+			if (str == null) return new ArgumentNullException("str", "String to parse cannot be null.");
 
 			if (separators == null || separators.Length == 0) separators = new char[] { '/', '-', ':', '.' };
-			string[] args = str.Split(separators);
-			if (args.Length < 3) throw new ArgumentException("String '{0}' cannot be split in three parts.".FormatWith(str));
 
-			int year = int.Parse(args[0]);
-			int month = int.Parse(args[1]);
-			int day = int.Parse(args[2]);
+			if (str.IndexOfAny(separators) < 0)
+			{
+				if (str.Length == 8)
+				{
+					year = int.Parse(str.Substring(0, 4));
+					month = int.Parse(str.Substring(4, 2));
+					day = int.Parse(str.Substring(6, 2));
+				}
+				else return new FormatException("Source '{0}' is not a valid time specification.".FormatWith(str));
+			}
 
-			return new CalendarDate(year, month, day);
+			else
+			{
+				string[] args = str.Split(separators);
+				if (args.Length < 3) return new ArgumentException("String '{0}' cannot be split in three parts.".FormatWith(str));
+
+				year = int.Parse(args[0]);
+				month = int.Parse(args[1]);
+				day = int.Parse(args[2]);
+			}
+
+			try { value = new CalendarDate(year, month, day); }
+			catch (Exception e) { return e; }
+
+			return null;
 		}
 
 		/// <summary>

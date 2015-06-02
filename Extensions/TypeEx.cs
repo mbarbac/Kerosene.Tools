@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'Type' instances.
 	/// </summary>
@@ -190,4 +194,3 @@ namespace Kerosene.Tools
 		}
 	}
 }
-

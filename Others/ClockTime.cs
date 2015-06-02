@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents a given moment in a day in a 24-hours clock format.
 	/// </summary>
@@ -224,26 +228,37 @@ namespace Kerosene.Tools
 			return base.GetHashCode();
 		}
 
+		/// <summary></summary>
 		public static bool operator >(ClockTime left, ClockTime right)
 		{
 			return Compare(left, right) > 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator <(ClockTime left, ClockTime right)
 		{
 			return Compare(left, right) < 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator >=(ClockTime left, ClockTime right)
 		{
 			return Compare(left, right) >= 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator <=(ClockTime left, ClockTime right)
 		{
 			return Compare(left, right) <= 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator ==(ClockTime left, ClockTime right)
 		{
 			return Compare(left, right) == 0;
 		}
+
+		/// <summary></summary>
 		public static bool operator !=(ClockTime left, ClockTime right)
 		{
 			return Compare(left, right) != 0;
@@ -278,23 +293,80 @@ namespace Kerosene.Tools
 		/// <summary>
 		/// Parsers the given string and creates a new ClockTime instance.
 		/// </summary>
-		/// <param name="str">The source string, with the expressed in the universal "hh:mm:ss.nnn" format.</param>
+		/// <param name="str">The source string, with the expressed in the universal "hh:mm:ss.nnn"
+		/// format, or the "hh", "hhmm", "hhmmss" and "hhmmssnnn" ones.</param>
 		/// <param name="separators">If not null the characters to use as field separators.</param>
 		/// <returns>A new ClockTime instance.</returns>
 		public static ClockTime Parse(string str, char[] separators = null)
 		{
-			if (str == null) throw new ArgumentNullException("str", "String to parse cannot be null.");
+			ClockTime value = null;
+			Exception e = TryParse(out value, str, separators);
+
+			if (e != null) throw e;
+			return value;
+		}
+
+		/// <summary>
+		/// Tries to parse the given string and creates a new ClockTime instance, returning null in
+		/// case of any errors or an exception describing the error.
+		/// </summary>
+		/// <param name="value">The value where to place the result.</param>
+		/// <param name="str">The source string, with the expressed in the universal "hh:mm:ss.nnn"
+		/// format, or the "hh", "hhmm", "hhmmss" and "hhmmssnnn" ones.</param>
+		/// <param name="separators">If not null the characters to use as field separators.</param>
+		/// <returns>A new ClockTime instance.</returns>
+		public static Exception TryParse(out ClockTime value, string str, char[] separators = null)
+		{
+			value = null;
+			int hour = 0, minute = 0, second = 0, millisecond = 0;
+
+			str = str.NullIfTrimmedIsEmpty();
+			if (str == null) return new ArgumentNullException("str", "String to parse cannot be null.");
 
 			if (separators == null || separators.Length == 0) separators = new char[] { ':', '.' };
-			string[] args = str.Split(separators);
-			if (args.Length < 2) throw new ArgumentException("String '{0}' cannot be split in at least two parts.".FormatWith(str));
 
-			int hour = int.Parse(args[0]);
-			int minute = int.Parse(args[1]);
-			int second = 0; if (args.Length > 2) second = int.Parse(args[2]);
-			int millisecond = 0; if (args.Length > 3) millisecond = int.Parse(args[3]);
+			if (str.IndexOfAny(separators) < 0)
+			{
+				if (str.Length == 2)
+				{
+					hour = int.Parse(str);
+				}
+				else if (str.Length == 4)
+				{
+					hour = int.Parse(str.Substring(0, 2));
+					minute = int.Parse(str.Substring(2, 2));
+				}
+				else if (str.Length == 6)
+				{
+					hour = int.Parse(str.Substring(0, 2));
+					minute = int.Parse(str.Substring(2, 2));
+					second = int.Parse(str.Substring(4, 2));
+				}
+				else if (str.Length == 9)
+				{
+					hour = int.Parse(str.Substring(0, 2));
+					minute = int.Parse(str.Substring(2, 2));
+					second = int.Parse(str.Substring(4, 2));
+					millisecond = int.Parse(str.Substring(6, 3));
+				}
+				else return new FormatException("Source '{0}' is not a valid time specification.".FormatWith(str));
+			}
 
-			return new ClockTime(hour, minute, second, millisecond);
+			else
+			{
+				string[] args = str.Split(separators);
+				if (args.Length < 2) return new ArgumentException("String '{0}' cannot be split in at least two parts.".FormatWith(str));
+
+				hour = int.Parse(args[0]);
+				minute = int.Parse(args[1]);
+				if (args.Length > 2) second = int.Parse(args[2]);
+				if (args.Length > 3) millisecond = int.Parse(args[3]);
+			}
+
+			try { value = new ClockTime(hour, minute, second, millisecond); }
+			catch (Exception e) { return e; }
+
+			return null;
 		}
 
 		/// <summary>

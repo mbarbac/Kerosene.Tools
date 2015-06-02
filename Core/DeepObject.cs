@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents a multi-level dynamic object whose members can also be dynamic ones, to any
 	/// arbitrary depth.
@@ -21,12 +21,12 @@ namespace Kerosene.Tools
 		/// Whether, by default, the names of the dynamic properties of DeepObject instances are
 		/// considered as case sensitive or not.
 		/// </summary>
-		public const bool DEFAULT_CASESENSITIVE_NAMES = true;
+		public const bool DEFAULT_CASE_SENSITIVE_NAMES = true;
 
 		bool _IsDisposed = false;
 		string _Name = null;
 		bool _Indexed = false;
-		bool _CaseSensitiveNames = DEFAULT_CASESENSITIVE_NAMES;
+		bool _CaseSensitiveNames = DEFAULT_CASE_SENSITIVE_NAMES;
 		DeepObject _Parent = null;
 		List<DeepObject> _Members = new List<DeepObject>();
 		object _Value = null;
@@ -45,7 +45,7 @@ namespace Kerosene.Tools
 		/// </summary>
 		/// <param name="caseSensitiveNames">Whether the names of the members of this instance
 		/// are case sensitive (the default) or not (to permit non-convencional scenarios). </param>
-		public DeepObject(bool caseSensitiveNames = DEFAULT_CASESENSITIVE_NAMES)
+		public DeepObject(bool caseSensitiveNames = DEFAULT_CASE_SENSITIVE_NAMES)
 		{
 			_CaseSensitiveNames = caseSensitiveNames;
 		}
@@ -66,11 +66,6 @@ namespace Kerosene.Tools
 			if (!IsDisposed) { OnDispose(true); GC.SuppressFinalize(this); }
 		}
 
-		~DeepObject()
-		{
-			if (!IsDisposed) OnDispose(false);
-		}
-
 		/// <summary>
 		/// Invoked when disposing or finalizing this instance.
 		/// </summary>
@@ -79,16 +74,23 @@ namespace Kerosene.Tools
 		{
 			if (disposing)
 			{
-				if (_Parent != null && _Parent._Members != null) _Parent._Members.Remove(this);
-				if (_Members != null)
+				try
 				{
-					var list = _Members.ToArray(); foreach (var member in list) member.Dispose();
+					if (_Parent != null) _Parent._Members.Remove(this);
+
+					if (_Members != null)
+					{
+						var list = _Members.ToArray();
+						foreach (var member in list) member.Dispose();
+						Array.Clear(list, 0, list.Length);
+					}
 				}
+				catch { }
 			}
 
-			if (_Members != null) _Members.Clear(); _Members = null;
-			_Parent = null;
-			_Value = null; _HasValue = false;
+			_Value = null;
+			_HasValue = false;
+			_Members = null;
 
 			_IsDisposed = true;
 		}

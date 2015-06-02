@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'String' instances.
 	/// </summary>
@@ -18,7 +22,7 @@ namespace Kerosene.Tools
 		public static string FormatWith(this string source, params object[] args)
 		{
 			if (source == null) throw new NullReferenceException("Source string cannot be null.");
-			
+
 			if (args != null) source = string.Format(source, args);
 			return source;
 		}

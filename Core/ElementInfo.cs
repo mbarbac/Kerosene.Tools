@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Provides an symetric way for treating both the fields and properties of a given type,
 	/// collectively known as 'members' for the operations of this class and related ones.
@@ -91,11 +93,6 @@ namespace Kerosene.Tools
 			if (!IsDisposed) { OnDispose(true, disposeParent); GC.SuppressFinalize(this); }
 		}
 
-		~ElementInfo()
-		{
-			if (!IsDisposed) OnDispose(false, disposeParent: DEFAULT_DISPOSE_PARENT);
-		}
-
 		/// <summary>
 		/// Invoked when disposing or finalizing this instance.
 		/// </summary>
@@ -105,9 +102,14 @@ namespace Kerosene.Tools
 		{
 			if (disposing)
 			{
-				if (disposeParent && _Parent != null && !_Parent.IsDisposed) _Parent.Dispose(true);
+				try
+				{
+					if (disposeParent && _Parent != null) _Parent.Dispose(true);
+				}
+				catch { }
 			}
-			_MemberInfo = null; // We want not to lock assemblies capturing their types
+
+			_MemberInfo = null;
 			_Parent = null;
 
 			_IsDisposed = true;
@@ -363,6 +365,8 @@ namespace Kerosene.Tools
 		/// Gets a list containing the elements (properties and fields) found on the given type.
 		/// If the flags contains the 'FlattenHierarchy' one then the interfaces it may implement
 		/// are also taken into consideration.
+		/// <para>Note that this method does not include recursively the elements found in the first
+		/// level elements of the given type.</para>
 		/// </summary>
 		/// <param name="type">The type to obtain its elements from.</param>
 		/// <param name="flags">The flags to use to find the elements.</param>
@@ -491,7 +495,8 @@ namespace Kerosene.Tools
 		/// Creates a new ElementInfo instance that refers to the element whose name is obtained
 		/// from parsing the expression given.
 		/// </summary>
-		/// <typeparam name="T">The type where the element is declared. If it is a multipa
+		/// <typeparam name="T">The type where the element is declared. If it is a multipart one,
+		/// this type must be the root-most one in the declaring chain.</typeparam>
 		/// <param name="element">The expression that resolves into the element.</param>
 		/// <param name="raise">If true an exception is thrown if the element, or any of its parts,
 		/// is not found. If false null is returned.</param>
@@ -501,6 +506,80 @@ namespace Kerosene.Tools
 		{
 			var name = ParseName<T>(element);
 			return Create<T>(name, raise, flags);
+		}
+
+		/// <summary>
+		/// Gets the value of the given element.
+		/// </summary>
+		/// <typeparam name="T">The type where the element is declared. If it is a multipart one,
+		/// this type must be the root-most one in the declaring chain.</typeparam>
+		/// <param name="host">The host where the element is declared. If it is a multipart one,
+		/// the host shall be the root-most one.</param>
+		/// <param name="name">The potentially multipart name of the element.</param>
+		/// <param name="flags">The binding flags to use to find the element.</param>
+		/// <returns>The requested value.</returns>
+		public static object GetElementValue<T>(T host, string name, BindingFlags flags = TypeEx.InstancePublicAndHidden)
+		{
+			if (host == null) throw new ArgumentNullException("Host instance cannot be null.");
+
+			var type = host.GetType();
+			var info = Create(type, name, raise: true, flags: flags);
+
+			var value = info.GetValue(host); info.Dispose();
+			return value;
+		}
+
+		/// <summary>
+		/// Gets the value of the given element.
+		/// </summary>
+		/// <typeparam name="T">The type where the element is declared. If it is a multipart one,
+		/// this type must be the root-most one in the declaring chain.</typeparam>
+		/// <param name="host">The host where the element is declared. If it is a multipart one,
+		/// the host shall be the root-most one.</param>
+		/// <param name="element">The expression that resolves into the element.</param>
+		/// <param name="flags">The binding flags to use to find the element.</param>
+		/// <returns>The requested value.</returns>
+		public static object GetElementValue<T>(T host, Expression<Func<T, object>> element, BindingFlags flags = TypeEx.InstancePublicAndHidden)
+		{
+			var name = ParseName<T>(element);
+			return GetElementValue<T>(host, name, flags);
+		}
+
+		/// <summary>
+		/// Sets the value of the given element.
+		/// </summary>
+		/// <typeparam name="T">The type where the element is declared. If it is a multipart one,
+		/// this type must be the root-most one in the declaring chain.</typeparam>
+		/// <param name="host">The host where the element is declared. If it is a multipart one,
+		/// the host shall be the root-most one.</param>
+		/// <param name="name">The potentially multipart name of the element.</param>
+		/// <param name="value">The value to set into the element.</param>
+		/// <param name="flags">The binding flags to use to find the element.</param>
+		public static void SetElementValue<T>(T host, string name, object value, BindingFlags flags = TypeEx.InstancePublicAndHidden)
+		{
+			if (host == null) throw new ArgumentNullException("Host instance cannot be null.");
+
+			var type = host.GetType();
+			var info = Create(type, name, raise: true, flags: flags);
+
+			info.SetValue(host, value);
+			info.Dispose();
+		}
+
+		/// <summary>
+		/// Sets the value of the given element.
+		/// </summary>
+		/// <typeparam name="T">The type where the element is declared. If it is a multipart one,
+		/// this type must be the root-most one in the declaring chain.</typeparam>
+		/// <param name="host">The host where the element is declared. If it is a multipart one,
+		/// the host shall be the root-most one.</param>
+		/// <param name="element">The expression that resolves into the element.</param>
+		/// <param name="value">The value to set into the element.</param>
+		/// <param name="flags">The binding flags to use to find the element.</param>
+		public static void SetElementValue<T>(T host, Expression<Func<T, object>> element, object value, BindingFlags flags = TypeEx.InstancePublicAndHidden)
+		{
+			var name = ParseName<T>(element);
+			SetElementValue<T>(host, name, value, flags);
 		}
 	}
 }

@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Helpers and extensions for working with 'Method' instances.
 	/// </summary>
@@ -35,7 +39,7 @@ namespace Kerosene.Tools
 			if (type != null) name = string.Format("{0}.{1}",
 				type.EasyName(chain, genericNames, nonGenericNames),
 				name);
-			
+
 			return name;
 		}
 	}

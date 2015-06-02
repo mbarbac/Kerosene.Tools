@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
-	/// Extends the 'Console' functionality.
+	/// Extends the functionality of the 'System.Console' class.
 	/// </summary>
 	public static class ConsoleEx
 	{
@@ -62,16 +66,6 @@ namespace Kerosene.Tools
 		}
 
 		/// <summary>
-		/// Whether the current execution can be considered as an interactive one or not.
-		/// </summary>
-		public static bool Interactive
-		{
-			get { return _Interactive; }
-			set { _Interactive = value; }
-		}
-		static bool _Interactive = false;
-
-		/// <summary>
 		/// Ask the console user whether to execute the program in interactive mode or not, and
 		/// sets the <see cref="ConsoleEx.Interactive"/> flag correspondingly.
 		/// </summary>
@@ -86,5 +80,15 @@ namespace Kerosene.Tools
 
 			if (str.ToUpper() == "N") Interactive = false;
 		}
+
+		/// <summary>
+		/// Whether the current execution can be considered as an interactive one or not.
+		/// </summary>
+		public static bool Interactive
+		{
+			get { return _Interactive; }
+			set { _Interactive = value; }
+		}
+		static bool _Interactive = false;
 	}
 }

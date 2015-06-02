@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
 	/// Represents the ability of an object to verify if it can be considered as equivalent to
 	/// a target instance of the given type, based upon any arbitrary criteria it implements.

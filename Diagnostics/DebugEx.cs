@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace Kerosene.Tools
 {
-	// ====================================================
+	// =====================================================
 	/// <summary>
-	/// Extends the 'Debug' functionality.
+	/// Extends the functionality of the 'System.Diagnostics.Debug' class.
 	/// </summary>
 	public static class DebugEx
 	{
