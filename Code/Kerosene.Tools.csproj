@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4CFE9465-0116-4A02-8CFF-CA1F83FE200A}</ProjectGuid>
+    <ProjectGuid>{787A5C57-9E18-4186-90D6-6C7E66B53A64}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Kerosene.Tools</RootNamespace>
@@ -15,7 +15,6 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,8 +24,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Kerosene.Tools.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,53 +32,51 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Kerosene.Tools.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);DOTNET_$(TargetFrameworkVersion.Replace("v","").Replace(".","_"))</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\EasyVersion.cs" />
     <Compile Include="Core\DeepObject.cs" />
-    <Compile Include="Core\ElementInfo.cs" />
-    <Compile Include="Core\DynamicParser.cs" />
     <Compile Include="Core\DynamicInfo.cs" />
-    <Compile Include="Core\IEquivalent.cs" />
+    <Compile Include="Core\DynamicParser.cs" />
+    <Compile Include="Core\EasyVersion.cs" />
+    <Compile Include="Core\ElementInfo.cs" />
     <Compile Include="Core\IDisposableEx.cs" />
-    <Compile Include="Diagnostics\DebugEx.cs" />
+    <Compile Include="Core\IEquivalent.cs" />
     <Compile Include="Diagnostics\ConsoleEx.cs" />
-    <Compile Include="Exceptions\DuplicateException.cs" />
-    <Compile Include="Exceptions\CannotExecuteException.cs" />
+    <Compile Include="Diagnostics\DebugEx.cs" />
     <Compile Include="Exceptions\CannotCreateException.cs" />
-    <Compile Include="Exceptions\NotEmptyException.cs" />
+    <Compile Include="Exceptions\CannotExecuteException.cs" />
+    <Compile Include="Exceptions\DuplicateException.cs" />
     <Compile Include="Exceptions\EmptyException.cs" />
-    <Compile Include="Exceptions\OrphanException.cs" />
-    <Compile Include="Exceptions\NotOrphanException.cs" />
+    <Compile Include="Exceptions\NotEmptyException.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Extensions\SerializationEx.cs" />
-    <Compile Include="Extensions\ExceptionEx.cs" />
+    <Compile Include="Exceptions\NotOrphanException.cs" />
+    <Compile Include="Exceptions\OrphanException.cs" />
     <Compile Include="Extensions\CharEx.cs" />
+    <Compile Include="Extensions\ExceptionEx.cs" />
     <Compile Include="Extensions\MethodEx.cs" />
     <Compile Include="Extensions\ObjectEx.cs" />
+    <Compile Include="Extensions\SerializationEx.cs" />
     <Compile Include="Extensions\StringEx.cs" />
     <Compile Include="Extensions\TypeEx.cs" />
-    <Compile Include="Others\ClockTime.cs" />
     <Compile Include="Others\CalendarDate.cs" />
+    <Compile Include="Others\ClockTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Kerosene.Tools.nuspec">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="Kerosene.Tools.nuspec" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
