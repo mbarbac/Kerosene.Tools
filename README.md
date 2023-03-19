@@ -1,3 +1,6 @@
+DEPRECATED.
+Please use the Yotei framework instead.
+
 # Kerosene.Tools
 Tools and Utilities for the Kerosene libraries, including:
 - DynamicParser, that provides the ability of parsing Dynamic Lambda Expressions, delegates, and convert them into agnostic expression trees
